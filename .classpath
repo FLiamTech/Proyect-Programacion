@@ -6,5 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="src/lib/lib_genericP64v2.0corrected.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

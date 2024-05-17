@@ -9,6 +9,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 public class Main_viewer extends JFrame {
 
@@ -36,7 +37,7 @@ public class Main_viewer extends JFrame {
 	 */
 	public Main_viewer() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 537, 394);
+		setBounds(100, 100, 559, 398);
 		setTitle("Electro Tech");
 		setResizable(false);
 		contentPane = new JPanel();
@@ -51,26 +52,30 @@ public class Main_viewer extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(10, 29, 128, 90);
-		panel.add(btnNewButton);
+		JButton btn_inventory = new JButton("Gestion de Inventario");
+		btn_inventory.setBounds(10, 29, 176, 140);
+		panel.add(btn_inventory);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.setBounds(231, 29, 128, 90);
-		panel.add(btnNewButton_1);
+		JButton btn_shell = new JButton("Punto de venta");
+		btn_shell.setBounds(196, 29, 163, 140);
+		panel.add(btn_shell);
 		
-		JButton btnNewButton_1_1 = new JButton("New button");
-		btnNewButton_1_1.setBounds(10, 243, 128, 90);
-		panel.add(btnNewButton_1_1);
+		JButton btn_manager = new JButton("Gestion de Proveedor");
+		btn_manager.setBounds(10, 180, 176, 153);
+		panel.add(btn_manager);
 		
-		JButton btnNewButton_1_1_1 = new JButton("New button");
-		btnNewButton_1_1_1.setBounds(231, 243, 128, 90);
-		panel.add(btnNewButton_1_1_1);
+		JButton btn_customers = new JButton("Gestion de clientes");
+		btn_customers.setBounds(196, 180, 163, 153);
+		panel.add(btn_customers);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Profile", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(386, 11, 125, 344);
+		panel_1.setBounds(386, 11, 147, 344);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
+		
+		JLabel lbl_photo = new JLabel("New label");
+		lbl_photo.setBounds(10, 11, 127, 124);
+		panel_1.add(lbl_photo);
 	}
 }
