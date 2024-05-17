@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 import model.Admin;
+import viewer.Admin_viewer;
 import viewer.Login;
 import viewer.Main_viewer;
 
@@ -31,9 +32,9 @@ public class Logic_view_register implements ActionListener
             String enteredPassword = new String(log.pwf_pasword.getPassword());
 			if(enteredUser.equals(Admin.adminUser) && enteredPassword.equals(Admin.adminPassword))
 			{
-				Main_viewer m = new Main_viewer();
-				m.setVisible(true);
-				m.setLocationRelativeTo(null);
+				Admin_viewer av = new Admin_viewer();
+				av.setVisible(true);
+				av.setLocationRelativeTo(null);
 				log.dispose();
 			}
 			else

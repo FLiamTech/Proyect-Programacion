@@ -2,6 +2,6 @@ package model;
 
 public interface Account 
 {
-	public final String adminUser = "administrador";
-	public final String adminPassword = "ProgramacionAplicada";
+	public final String adminUser = "admin";
+	public final String adminPassword = "progra";
 }
