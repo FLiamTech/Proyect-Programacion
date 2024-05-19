@@ -21,4 +21,9 @@ public class ValidateFields implements Parametrizable
 	{
 		return date.matches(ERDate);
 	}
+	
+	public static boolean validateNameProduct (String name)
+	{
+		return name.matches(ERNameProduct);
+	}
 }

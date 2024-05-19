@@ -12,7 +12,10 @@ import javax.swing.JPasswordField;
 
 import model.Admin;
 import model.AdminDAO;
+import model.Product;
+import model.ProductDAO;
 import viewer.Admin_viewer;
+import viewer.Inventory;
 import viewer.Login;
 import viewer.Main_viewer;
 
@@ -20,27 +23,31 @@ public class Logic_view_register implements ActionListener
 {
 	private Main_viewer mv;
 	private Login log;
+	private Inventory iv;
 	Admin_viewer av = new Admin_viewer();
 	Admin admin = new Admin();
 	AdminDAO adao = new AdminDAO();
 	List <Admin> employees = new ArrayList();
 	
-	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv)
+	Product product = new Product ();
+	ProductDAO pdao = new ProductDAO ();
+	
+	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv)
 	{
+		this.iv = iv;
 		this.mv = mv;
 		this.av = av;
 		this.log = log;
+		this.mv.btn_inventory.addActionListener(this);
+		this.iv.btn_addProduct.addActionListener(this);
+		
 		this.av.btn_searchEmployee.addActionListener(this);
 		this.av.btn_accept.addActionListener(this);
 		this.av.btn_create.addActionListener(this);
+		
 		this.log.btn_enter.addActionListener(this);
 	}
 	
-//	public Logic_view_register (Admin_viewer av)
-//	{
-//		this.av = av;
-//		this.av.btn_create.addActionListener(this);
-//	}
 	public Logic_view_register ()
 	{
 
@@ -137,7 +144,36 @@ public class Logic_view_register implements ActionListener
 				}
 			}
 		}
-		
+		if (e.getSource() == mv.btn_inventory)
+		{
+			iv.setVisible(true);
+			iv.setLocationRelativeTo(null);
+			mv.dispose();
+			
+			int numProductos = pdao.numProducts();
+			iv.lbl_products.setText("<html>N. productos registrados: <font color='red'>" + numProductos + "</font></html>");
+		}
+		if (e.getSource() == iv.btn_addProduct)
+		{
+			if (validateProduct())
+			{
+				product.setName(iv.txt_nameProduct.getText());
+				product.setDescription(iv.txtp_description.getText());
+				int stock = (int) iv.spn_stock.getValue();
+				product.setStock(stock);
+				double price = (double) iv.spn_price.getValue();
+				product.setPrice(price);
+				product.setSupplier("La favorita");
+				try {
+					pdao.writeProducts(product);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				JOptionPane.showMessageDialog(iv, "Producto agregado");
+				
+			}
+		}
 	}
 	
 	public boolean validate()
@@ -185,6 +221,23 @@ public class Logic_view_register implements ActionListener
 	    }
 
 	    return estate;
+	}
+	
+	public boolean validateProduct ()
+	{
+		boolean estate = true;
+		if (ValidateFields.validateNameProduct(iv.txt_nameProduct.getText()))
+		{
+			iv.txt_nameProduct.setBackground(Color.green);
+		}
+		else
+		{
+			iv.txt_nameProduct.setBackground(Color.red);
+			estate = false;
+		}
+		
+		return estate;
+		
 	}
 	
 }

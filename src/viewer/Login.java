@@ -70,8 +70,9 @@ public class Login extends JFrame {
 		btn_enter.setBounds(238, 90, 89, 23);
 		contentPane.add(btn_enter);
 		
+		Inventory iv = new Inventory();
 		Main_viewer mv = new Main_viewer();
 		Admin_viewer av = new Admin_viewer();
-		Logic_view_register lg = new Logic_view_register(this, av, mv);
+		Logic_view_register lg = new Logic_view_register(this, av, mv, iv);
 	}
 }

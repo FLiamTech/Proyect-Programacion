@@ -6,15 +6,24 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
+import controller.Logic_view_register;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 public class Main_viewer extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	public JButton btn_inventory;
+	public JButton btn_manager;
+	public JButton btn_customers;
+	public JButton btn_shell;
+	public JLabel lbl_photo;
 
 	/**
 	 * Launch the application.
@@ -52,20 +61,21 @@ public class Main_viewer extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JButton btn_inventory = new JButton("Gestion de Inventario");
-		btn_inventory.setBounds(10, 29, 176, 140);
+		btn_inventory = new JButton("Gestion de Inventario");
+		btn_inventory.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\resources\\software-de-gestion-de-inventarios-ES-Capterra-Header.png"));
+		btn_inventory.setBounds(10, 29, 169, 96);
 		panel.add(btn_inventory);
 		
-		JButton btn_shell = new JButton("Punto de venta");
-		btn_shell.setBounds(196, 29, 163, 140);
+		btn_shell = new JButton("Punto de venta");
+		btn_shell.setBounds(189, 29, 170, 140);
 		panel.add(btn_shell);
 		
-		JButton btn_manager = new JButton("Gestion de Proveedor");
-		btn_manager.setBounds(10, 180, 176, 153);
+		btn_manager = new JButton("Gestion de Proveedor");
+		btn_manager.setBounds(10, 180, 170, 140);
 		panel.add(btn_manager);
 		
-		JButton btn_customers = new JButton("Gestion de clientes");
-		btn_customers.setBounds(196, 180, 163, 153);
+		btn_customers = new JButton("Gestion de clientes");
+		btn_customers.setBounds(189, 180, 170, 140);
 		panel.add(btn_customers);
 		
 		JPanel panel_1 = new JPanel();
@@ -74,7 +84,7 @@ public class Main_viewer extends JFrame {
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
-		JLabel lbl_photo = new JLabel("New label");
+		lbl_photo = new JLabel("New label");
 		lbl_photo.setBounds(10, 11, 127, 124);
 		panel_1.add(lbl_photo);
 	}
