@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.Logic_view_register;
+import libreriaVersion1.Files;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -70,6 +71,8 @@ public class Login extends JFrame {
 		btn_enter.setBounds(238, 90, 89, 23);
 		contentPane.add(btn_enter);
 		
+		Files file = new Files ("C:/registroEmpleados");
+		file.create(0);
 		Inventory iv = new Inventory();
 		Main_viewer mv = new Main_viewer();
 		Admin_viewer av = new Admin_viewer();
