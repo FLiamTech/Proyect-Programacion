@@ -39,8 +39,11 @@ public class Logic_view_register implements ActionListener
 		this.av = av;
 		this.log = log;
 		this.mv.btn_inventory.addActionListener(this);
+		this.mv.btn_signOut.addActionListener(this);
+		
 		this.iv.btn_addProduct.addActionListener(this);
 		
+		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
 		this.av.btn_accept.addActionListener(this);
 		this.av.btn_create.addActionListener(this);
@@ -74,10 +77,24 @@ public class Logic_view_register implements ActionListener
     					mv.setVisible(true);
     					mv.setLocationRelativeTo(null);
     					log.dispose();
+    					
+    					mv.lbl_nameEmployee.setText(ad.getName());
+    					mv.lbl_dniEmployee.setText(ad.getDni());
+    					mv.lbl_codeEmployee.setText(ad.getCode());
+    					mv.lbl_nameEmployee.setForeground(Color.green);
+    					mv.lbl_dniEmployee.setForeground(Color.green);
+    					mv.lbl_codeEmployee.setForeground(Color.magenta);
     					return;
     			}
     		}
     		JOptionPane.showMessageDialog(log, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+		}
+		if (e.getSource() == mv.btn_signOut)
+		{
+			log.setVisible(true);
+			log.setLocationRelativeTo(null);
+			mv.dispose();
+			cleanLogin();
 		}
 		if (e.getSource() == av.btn_create)
 		{
@@ -104,7 +121,7 @@ public class Logic_view_register implements ActionListener
 					e1.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(av, "Datos guardados");
-				
+				cleanAddEmployee();
 			}
 		}
 		if(e.getSource() == av.btn_searchEmployee)
@@ -126,23 +143,44 @@ public class Logic_view_register implements ActionListener
 				}
 			}
 		}
-		if (e.getSource() == av.btn_accept)
+		if (e.getSource() == av.btn_accept) {
+	        String dni = av.txt_dniEmployeeAux.getText();
+	        String newPassword = new String(av.pwd_newPassword.getPassword());
+	        
+	        employees = adao.readerEmployees();
+	        
+	        boolean found = false;
+	        for (Admin ad : employees) 
+	        {
+	            if (ad.getDni().equals(dni)) 
+	            {
+	                ad.setPassword(newPassword);
+	                try {
+	                    adao.replaceEmployees(ad); // Asegúrate de que este método realmente actualice el empleado
+	                    found = true;
+	                } catch (IOException e1) {
+	                    e1.printStackTrace();
+	                }
+	                break;
+	            }
+	        }
+	        
+	        if (found) 
+	        {
+	            JOptionPane.showMessageDialog(av, "Password changed");
+	            cleanResetPass();
+	        } else 
+	        {
+	            JOptionPane.showMessageDialog(av, "Employee not found", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+		if (e.getSource() == av.btn_singOut)
 		{
-			admin.setDni(av.txt_dniEmployeeAux.getText());
-			employees = adao.readerEmployees();
-			
-			for (Admin ad : employees)
-			{
-				System.out.println("Entro");
-				if (ad.getDni().equals(admin.getDni()))
-				{
-					System.out.println("Entro");
-					String newPassword = new String (av.pwd_newPassword.getPassword());
-					ad.setPassword(newPassword);
-					JOptionPane.showMessageDialog(av, "Password changed");
-
-				}
-			}
+			log.setVisible(true);
+			log.setLocationRelativeTo(null);
+			av.dispose();
+			cleanLogin();
+			return;
 		}
 		if (e.getSource() == mv.btn_inventory)
 		{
@@ -150,8 +188,15 @@ public class Logic_view_register implements ActionListener
 			iv.setLocationRelativeTo(null);
 			mv.dispose();
 			
-			int numProductos = pdao.numProducts();
-			iv.lbl_products.setText("<html>N. productos registrados: <font color='red'>" + numProductos + "</font></html>");
+			int numProductos;
+			try {
+				numProductos = pdao.numProducts();
+				iv.lbl_products.setText("<html>N. productos registrados: <font color='red'>" + numProductos + "</font></html>");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
 		if (e.getSource() == iv.btn_addProduct)
 		{
@@ -172,6 +217,9 @@ public class Logic_view_register implements ActionListener
 				}
 				JOptionPane.showMessageDialog(iv, "Producto agregado");
 				
+				mv.setVisible(true);
+				mv.setLocationRelativeTo(null);
+				iv.dispose();
 			}
 		}
 	}
@@ -235,9 +283,32 @@ public class Logic_view_register implements ActionListener
 			iv.txt_nameProduct.setBackground(Color.red);
 			estate = false;
 		}
-		
 		return estate;
-		
 	}
 	
+	public void cleanLogin ()
+	{
+		log.txt_user.setText("");
+		log.pwf_pasword.setText("");
+	}
+	
+	public void cleanAddEmployee ()
+	{
+		av.txt_nameEmplod.setText("");
+		av.txt_nameEmplod.setBackground(Color.white);
+		av.txt_dniEmplod.setText("");
+		av.txt_dniEmplod.setBackground(Color.white);
+		av.txt_dateEmplod.setText("");
+		av.txt_dateEmplod.setBackground(Color.white);
+		av.pwf_codeEmplod.setText("");
+		av.pwf_codeEmplod.setBackground(Color.white);
+	}
+	
+	public void cleanResetPass ()
+	{
+		av.txt_dniEmployeeAux.setText("");
+		av.pwd_newPassword.setText("");
+		av.lbl_estate.setText("Desconocido");
+		av.lbl_estate.setForeground(Color.white);
+	}
 }

@@ -28,6 +28,7 @@ public class Admin_viewer extends JFrame {
 	public JButton btn_searchEmployee;
 	public JLabel lbl_estate;
 	public JPasswordField pwd_newPassword;
+	public JButton btn_singOut;
 
 	/**
 	 * Launch the application.
@@ -136,5 +137,9 @@ public class Admin_viewer extends JFrame {
 		pwd_newPassword = new JPasswordField();
 		pwd_newPassword.setBounds(10, 168, 223, 20);
 		panel_1.add(pwd_newPassword);
+		
+		btn_singOut = new JButton("Sign Out");
+		btn_singOut.setBounds(135, 246, 116, 23);
+		panel_1.add(btn_singOut);
 	}
 }

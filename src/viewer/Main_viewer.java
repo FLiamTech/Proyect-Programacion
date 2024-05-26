@@ -24,6 +24,12 @@ public class Main_viewer extends JFrame {
 	public JButton btn_customers;
 	public JButton btn_shell;
 	public JLabel lbl_photo;
+	public JLabel lblDni;
+	public JLabel lbl_dniEmployee;
+	public JLabel lblCodigo;
+	public JLabel lbl_codeEmployee;
+	public JButton btn_signOut;
+	public JLabel lbl_nameEmployee;
 
 	/**
 	 * Launch the application.
@@ -85,7 +91,35 @@ public class Main_viewer extends JFrame {
 		panel_1.setLayout(null);
 		
 		lbl_photo = new JLabel("New label");
-		lbl_photo.setBounds(10, 11, 127, 124);
+		lbl_photo.setBounds(10, 11, 127, 112);
 		panel_1.add(lbl_photo);
+		
+		JLabel lblNewLabel = new JLabel("Nombre del empleado");
+		lblNewLabel.setBounds(10, 121, 127, 14);
+		panel_1.add(lblNewLabel);
+		
+		lbl_nameEmployee = new JLabel("desconocido");
+		lbl_nameEmployee.setBounds(10, 146, 127, 14);
+		panel_1.add(lbl_nameEmployee);
+		
+		lblDni = new JLabel("DNI");
+		lblDni.setBounds(10, 171, 127, 14);
+		panel_1.add(lblDni);
+		
+		lbl_dniEmployee = new JLabel("desconocido");
+		lbl_dniEmployee.setBounds(10, 196, 127, 14);
+		panel_1.add(lbl_dniEmployee);
+		
+		lblCodigo = new JLabel("Codigo");
+		lblCodigo.setBounds(10, 221, 127, 14);
+		panel_1.add(lblCodigo);
+		
+		lbl_codeEmployee = new JLabel("desconocido");
+		lbl_codeEmployee.setBounds(10, 246, 127, 14);
+		panel_1.add(lbl_codeEmployee);
+		
+		btn_signOut = new JButton("Sign Out");
+		btn_signOut.setBounds(28, 310, 89, 23);
+		panel_1.add(btn_signOut);
 	}
 }

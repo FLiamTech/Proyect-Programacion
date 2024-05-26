@@ -1,6 +1,8 @@
 package model;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +25,18 @@ public class ProductDAO implements Path
 		return file.writeFile(p.saveProducts(), false);
 	}
 	
-	public List <Product> readerProducts ()
+	public List <Product> readerProducts () throws IOException
 	{
 		List <Product> products = new ArrayList();
 		file.setFile(new File (Path2, infoProducts));
 		
-		String [] data = file.readerFile().split("\n");
-		for (String dataProducts : data)
+		BufferedReader reader = new BufferedReader(new FileReader(file.getFile()));
+		String line;
+		while ((line = reader.readLine())  != null)
 		{
-			String [] info = dataProducts.split(";");
+			if (line.trim().isEmpty()) continue;
+			
+			String [] info = line.split(";");
 			Product p = new Product ();
 			p.setName(info[0]);
 			p.setDescription(info[1]);
@@ -44,13 +49,9 @@ public class ProductDAO implements Path
 		return products;
 	}
 	
-	public int numProducts ()
+	public int numProducts () throws IOException
 	{
-		file.setFile(new File(Path2, infoProducts));
-	    String fileContent = file.readerFile();
-	    System.out.println("Contenido del archivo: " + fileContent);
-	    String[] products = fileContent.split("\n");
-	    System.out.println("Número de productos: " + products.length);
-	    return products.length;
+		List <Product> products = readerProducts();
+		return products.size();
 	}
 }
