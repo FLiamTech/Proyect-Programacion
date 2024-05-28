@@ -52,7 +52,7 @@ public class Main_viewer extends JFrame {
 	 */
 	public Main_viewer() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 559, 398);
+		setBounds(100, 100, 554, 396);
 		setTitle("Electro Tech");
 		setResizable(false);
 		contentPane = new JPanel();
@@ -63,63 +63,64 @@ public class Main_viewer extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Menu Options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 11, 369, 344);
+		panel.setBounds(10, 11, 371, 348);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
 		btn_inventory = new JButton("Gestion de Inventario");
 		btn_inventory.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\resources\\software-de-gestion-de-inventarios-ES-Capterra-Header.png"));
-		btn_inventory.setBounds(10, 29, 169, 96);
+		btn_inventory.setBounds(10, 24, 169, 96);
 		panel.add(btn_inventory);
 		
 		btn_shell = new JButton("Punto de venta");
-		btn_shell.setBounds(189, 29, 170, 140);
+		btn_shell.setBounds(189, 24, 170, 140);
 		panel.add(btn_shell);
 		
 		btn_manager = new JButton("Gestion de Proveedor");
-		btn_manager.setBounds(10, 180, 170, 140);
+		btn_manager.setBounds(9, 175, 170, 140);
 		panel.add(btn_manager);
 		
 		btn_customers = new JButton("Gestion de clientes");
-		btn_customers.setBounds(189, 180, 170, 140);
+		btn_customers.setBounds(189, 175, 170, 140);
 		panel.add(btn_customers);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Profile", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(386, 11, 147, 344);
+		panel_1.setBounds(386, 11, 147, 348);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
 		lbl_photo = new JLabel("New label");
-		lbl_photo.setBounds(10, 11, 127, 112);
+		lbl_photo.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\iconProfile.png"));
+		lbl_photo.setBounds(10, 24, 120, 120);
 		panel_1.add(lbl_photo);
 		
 		JLabel lblNewLabel = new JLabel("Nombre del empleado");
-		lblNewLabel.setBounds(10, 121, 127, 14);
+		lblNewLabel.setBounds(10, 166, 127, 14);
 		panel_1.add(lblNewLabel);
 		
 		lbl_nameEmployee = new JLabel("desconocido");
-		lbl_nameEmployee.setBounds(10, 146, 127, 14);
+		lbl_nameEmployee.setBounds(10, 191, 127, 14);
 		panel_1.add(lbl_nameEmployee);
 		
 		lblDni = new JLabel("DNI");
-		lblDni.setBounds(10, 171, 127, 14);
+		lblDni.setBounds(10, 216, 127, 14);
 		panel_1.add(lblDni);
 		
 		lbl_dniEmployee = new JLabel("desconocido");
-		lbl_dniEmployee.setBounds(10, 196, 127, 14);
+		lbl_dniEmployee.setBounds(10, 241, 127, 14);
 		panel_1.add(lbl_dniEmployee);
 		
 		lblCodigo = new JLabel("Codigo");
-		lblCodigo.setBounds(10, 221, 127, 14);
+		lblCodigo.setBounds(10, 266, 127, 14);
 		panel_1.add(lblCodigo);
 		
 		lbl_codeEmployee = new JLabel("desconocido");
-		lbl_codeEmployee.setBounds(10, 246, 127, 14);
+		lbl_codeEmployee.setBounds(10, 291, 127, 14);
 		panel_1.add(lbl_codeEmployee);
 		
 		btn_signOut = new JButton("Sign Out");
-		btn_signOut.setBounds(28, 310, 89, 23);
+		btn_signOut.setBounds(29, 316, 89, 23);
 		panel_1.add(btn_signOut);
 	}
 }

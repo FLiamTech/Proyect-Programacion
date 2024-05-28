@@ -29,6 +29,7 @@ public class Admin_viewer extends JFrame {
 	public JLabel lbl_estate;
 	public JPasswordField pwd_newPassword;
 	public JButton btn_singOut;
+	public JButton btn_photo;
 
 	/**
 	 * Launch the application.
@@ -103,8 +104,16 @@ public class Admin_viewer extends JFrame {
 		txt_dateEmplod.setBounds(10, 215, 118, 20);
 		panel.add(txt_dateEmplod);
 		
+		btn_photo = new JButton("Photo");
+		btn_photo.setBounds(138, 214, 43, 23);
+		panel.add(btn_photo);
+		
+		JLabel lblFoto = new JLabel("Foto");
+		lblFoto.setBounds(143, 193, 65, 14);
+		panel.add(lblFoto);
+		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Forget pasword", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Change pasword", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_1.setBounds(228, 11, 261, 280);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);

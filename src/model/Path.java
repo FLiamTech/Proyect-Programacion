@@ -15,5 +15,5 @@ public interface Path
 	
 	public final String Path2 = PathMain + "/productos";
 	public final String infoProducts = "Registro_productos.txt";
-
+	
 }

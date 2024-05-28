@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,11 +62,13 @@ public class AdminDAO implements Path
 	    
 	    try (BufferedReader reader = new BufferedReader(new FileReader(file.getFile()))) {
 	        String line;
-	        while ((line = reader.readLine()) != null) {
+	        while ((line = reader.readLine()) != null) 
+	        {
 	            if (line.trim().isEmpty()) continue; // Ignorar líneas vacías
 	            
 	            String[] info = line.split(";");
-	            if (info.length >= 6) {
+	            if (info.length >= 6)
+	            {
 	                Admin a = new Admin();
 	                a.setName(info[0]);
 	                a.setDni(info[1]);
@@ -73,11 +76,10 @@ public class AdminDAO implements Path
 	                a.setDate(info[3]);
 	                a.setUser(info[4]);
 	                a.setPassword(info[5]);
+	                a.setPathImage(info[6]);
 	                employee.add(a);
-	                System.out.println("Línea leída del archivo: " + line);
-	            } else {
-	                System.err.println("Error: la línea no tiene suficientes elementos: " + line);
 	            }
+
 	        }
 	    } catch (IOException e) {
 	        e.printStackTrace();

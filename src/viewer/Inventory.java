@@ -27,6 +27,7 @@ public class Inventory extends JFrame {
 	public JTextPane txtp_description;
 	public JButton btn_addProduct;
 	public JLabel lbl_products;
+	public JButton btn_return;
 
 	/**
 	 * Launch the application.
@@ -105,11 +106,15 @@ public class Inventory extends JFrame {
 		panel.add(cmb_supplier);
 		
 		btn_addProduct = new JButton("Add");
-		btn_addProduct.setBounds(10, 278, 89, 23);
+		btn_addProduct.setBounds(10, 252, 89, 23);
 		panel.add(btn_addProduct);
 		
 		lbl_products = new JLabel("Desconocido");
 		lbl_products.setBounds(133, 282, 176, 14);
 		panel.add(lbl_products);
+		
+		btn_return = new JButton("Return");
+		btn_return.setBounds(10, 278, 89, 23);
+		panel.add(btn_return);
 	}
 }

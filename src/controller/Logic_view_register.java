@@ -1,15 +1,20 @@
 package controller;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import libreriaVersion1.Files;
 import model.Admin;
 import model.AdminDAO;
 import model.Product;
@@ -24,6 +29,7 @@ public class Logic_view_register implements ActionListener
 	private Main_viewer mv;
 	private Login log;
 	private Inventory iv;
+	private Files photo = new Files ("");
 	Admin_viewer av = new Admin_viewer();
 	Admin admin = new Admin();
 	AdminDAO adao = new AdminDAO();
@@ -42,11 +48,13 @@ public class Logic_view_register implements ActionListener
 		this.mv.btn_signOut.addActionListener(this);
 		
 		this.iv.btn_addProduct.addActionListener(this);
+		this.iv.btn_return.addActionListener(this);
 		
 		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
 		this.av.btn_accept.addActionListener(this);
 		this.av.btn_create.addActionListener(this);
+		this.av.btn_photo.addActionListener(this);
 		
 		this.log.btn_enter.addActionListener(this);
 	}
@@ -67,6 +75,8 @@ public class Logic_view_register implements ActionListener
 				av.setVisible(true);
 				av.setLocationRelativeTo(null);
 				log.dispose();
+				cleanAddEmployee();
+				cleanResetPass();
 				return;
 			}
             employees = adao.readerEmployees();
@@ -84,6 +94,7 @@ public class Logic_view_register implements ActionListener
     					mv.lbl_nameEmployee.setForeground(Color.green);
     					mv.lbl_dniEmployee.setForeground(Color.green);
     					mv.lbl_codeEmployee.setForeground(Color.magenta);
+    					loadPhoto(ad.getPathImage());
     					return;
     			}
     		}
@@ -95,6 +106,11 @@ public class Logic_view_register implements ActionListener
 			log.setLocationRelativeTo(null);
 			mv.dispose();
 			cleanLogin();
+		}
+		if(e.getSource() == av.btn_photo)
+		{
+			photo.getFileChooser(av, "jpeg");
+			loadPhoto(photo.getFile().getAbsolutePath());
 		}
 		if (e.getSource() == av.btn_create)
 		{
@@ -114,6 +130,7 @@ public class Logic_view_register implements ActionListener
 	            {
 	                admin.setPassword(new String(passwordField.getPassword()));
 	            }
+	            saveFilePhoto();
 				try {
 					adao.writeEmployees(admin);
 				} catch (IOException e1) {
@@ -194,7 +211,7 @@ public class Logic_view_register implements ActionListener
 				iv.lbl_products.setText("<html>N. productos registrados: <font color='red'>" + numProductos + "</font></html>");
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(mv, "First Time to enter", "First", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
 		}
@@ -221,6 +238,12 @@ public class Logic_view_register implements ActionListener
 				mv.setLocationRelativeTo(null);
 				iv.dispose();
 			}
+		}
+		if(e.getSource() == iv.btn_return)
+		{
+			mv.setVisible(true);
+			mv.setLocationRelativeTo(null);
+			iv.dispose();
 		}
 	}
 	
@@ -286,6 +309,25 @@ public class Logic_view_register implements ActionListener
 		return estate;
 	}
 	
+	private void loadPhoto (String path)
+	{
+		ImageIcon photo = new ImageIcon (path);
+		Image img = photo.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+		mv.lbl_photo.setIcon(new ImageIcon(img));
+	}
+	
+	private void saveFilePhoto ()
+	{
+		Files photoDest = new Files (adao.Path + "/" + admin.getDni() + ".jpg");
+		try {
+			java.nio.file.Files.copy(photo.getFile().toPath(), photoDest.getFile().toPath());
+			admin.setPathImage(photoDest.getFile().getAbsolutePath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	public void cleanLogin ()
 	{
 		log.txt_user.setText("");
@@ -309,6 +351,6 @@ public class Logic_view_register implements ActionListener
 		av.txt_dniEmployeeAux.setText("");
 		av.pwd_newPassword.setText("");
 		av.lbl_estate.setText("Desconocido");
-		av.lbl_estate.setForeground(Color.white);
+		av.lbl_estate.setForeground(Color.black);
 	}
 }

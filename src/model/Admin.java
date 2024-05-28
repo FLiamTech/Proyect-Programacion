@@ -14,10 +14,10 @@ public class Admin implements Account
 		dt_e2 = new Generica<> ();
 	}
 	
-	public Admin (String name, String dni, String code, String date, String user, String password)
+	public Admin (String name, String dni, String code, String date, String user, String password, String path)
 	{
 		dt_e1 = new Generica<> (name, dni, code, date);
-		dt_e2 = new Generica<> (user, password);
+		dt_e2 = new Generica<> (user, password, path);
 	}
 	
 	public String getName ()
@@ -79,9 +79,19 @@ public class Admin implements Account
 	{
 		this.dt_e2.setAttribute2(password);
 	}
+	
+	public String getPathImage ()
+	{
+		return this.dt_e2.getAttribute3();
+	}
+	
+	public void setPathImage (String path)
+	{
+		this.dt_e2.setAttribute3(path);
+	}
 	public String infoDates ()
 	{
-		return String.format("%s;%s;%s;%s;%s;%s",
-				getName(), getDni(), getCode(), getDate(), getUser(), getPassword());
+		return String.format("%s;%s;%s;%s;%s;%s;%s",
+				getName(), getDni(), getCode(), getDate(), getUser(), getPassword(), getPathImage());
 	}
 }
