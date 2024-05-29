@@ -8,4 +8,7 @@ public interface Parametrizable
 	public final String ERDate = "^[0-1][1-9][/][0-3][0-9][/](202)[1-9]$";
 	
 	public final String ERNameProduct = "^([A-Z][a-z]{2,}\s?){1,2}$";
+	
+	public final String ERAddress = "^[A-Za-z\s]+,\s?[A-Za-z\s]+,\s?[A-Za-z\s]+$";
+	public final String ERContact = "^(09|10)[0-9]{8}$";
 }

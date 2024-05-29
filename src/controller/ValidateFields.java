@@ -26,4 +26,14 @@ public class ValidateFields implements Parametrizable
 	{
 		return name.matches(ERNameProduct);
 	}
+	
+	public static boolean validateAddress (String address)
+	{
+		return address.matches(ERAddress);
+	}
+	
+	public static boolean validateContact (String contact)
+	{
+		return contact.matches(ERContact);
+	}
 }

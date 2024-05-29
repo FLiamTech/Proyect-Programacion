@@ -16,4 +16,8 @@ public interface Path
 	public final String Path2 = PathMain + "/productos";
 	public final String infoProducts = "Registro_productos.txt";
 	
+	// path de Clientes
+	
+	public final String PATH_CUSTOMERS = PathMain + "/clientes";
+	public final String infoCustomers = "Registro_clientes.txt";
 }

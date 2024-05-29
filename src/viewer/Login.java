@@ -21,6 +21,7 @@ public class Login extends JFrame {
 	public JTextField txt_user;
 	public JPasswordField pwf_pasword;
 	public JButton btn_enter;
+	public JLabel lbl_process;
 
 	/**
 	 * Launch the application.
@@ -71,11 +72,16 @@ public class Login extends JFrame {
 		btn_enter.setBounds(238, 90, 89, 23);
 		contentPane.add(btn_enter);
 		
+		lbl_process = new JLabel("*");
+		lbl_process.setBounds(24, 94, 204, 14);
+		contentPane.add(lbl_process);
+		
 		Files file = new Files ("C:/registroEmpleados");
 		file.create(0);
 		Inventory iv = new Inventory();
+		Customers cs = new Customers();
 		Main_viewer mv = new Main_viewer();
 		Admin_viewer av = new Admin_viewer();
-		Logic_view_register lg = new Logic_view_register(this, av, mv, iv);
+		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs);
 	}
 }

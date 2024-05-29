@@ -10,16 +10,21 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import libreriaVersion1.Files;
 import model.Admin;
 import model.AdminDAO;
+import model.Client;
+import model.ClientDAO;
 import model.Product;
 import model.ProductDAO;
 import viewer.Admin_viewer;
+import viewer.Customers;
 import viewer.Inventory;
 import viewer.Login;
 import viewer.Main_viewer;
@@ -29,26 +34,30 @@ public class Logic_view_register implements ActionListener
 	private Main_viewer mv;
 	private Login log;
 	private Inventory iv;
+	private Customers cs;
 	private Files photo = new Files ("");
 	Admin_viewer av = new Admin_viewer();
 	Admin admin = new Admin();
 	AdminDAO adao = new AdminDAO();
 	List <Admin> employees = new ArrayList();
+	List <Client> customers = new ArrayList();
 	
 	Product product = new Product ();
 	ProductDAO pdao = new ProductDAO ();
 	
-	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv)
+	Client client = new Client ();
+	ClientDAO cdao = new ClientDAO ();
+	
+	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs)
 	{
 		this.iv = iv;
 		this.mv = mv;
 		this.av = av;
 		this.log = log;
+		this.cs = cs;
 		this.mv.btn_inventory.addActionListener(this);
+		this.mv.btn_customers.addActionListener(this);
 		this.mv.btn_signOut.addActionListener(this);
-		
-		this.iv.btn_addProduct.addActionListener(this);
-		this.iv.btn_return.addActionListener(this);
 		
 		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
@@ -57,6 +66,14 @@ public class Logic_view_register implements ActionListener
 		this.av.btn_photo.addActionListener(this);
 		
 		this.log.btn_enter.addActionListener(this);
+		
+		this.iv.btn_addProduct.addActionListener(this);
+		this.iv.btn_return.addActionListener(this);
+		
+		this.cs.btn_addClient.addActionListener(this);
+		this.cs.btn_searchClient.addActionListener(this);
+		this.cs.btn_changeDatesClient.addActionListener(this);
+		this.cs.btn_returnClient.addActionListener(this);
 	}
 	
 	public Logic_view_register ()
@@ -145,19 +162,23 @@ public class Logic_view_register implements ActionListener
 		{
 			admin.setDni(av.txt_dniEmployeeAux.getText());
 			employees = adao.readerEmployees();
+			boolean find = false;
 			for (Admin ad : employees)
 			{
 				if (ad.getDni().equals(admin.getDni()))
 				{
-					av.lbl_estate.setText("Encontrado");
-					av.lbl_estate.setForeground(Color.green);
-					
+					find = true;
 				}
-				else
-				{
-					av.lbl_estate.setText("No encontrado");
-					av.lbl_estate.setForeground(Color.red);
-				}
+			}
+			if (find)
+			{
+				av.lbl_estate.setText("Encontrado");
+				av.lbl_estate.setForeground(Color.green);
+			}
+			else
+			{
+				av.lbl_estate.setText("No encontrado");
+				av.lbl_estate.setForeground(Color.red);
 			}
 		}
 		if (e.getSource() == av.btn_accept) {
@@ -173,7 +194,7 @@ public class Logic_view_register implements ActionListener
 	            {
 	                ad.setPassword(newPassword);
 	                try {
-	                    adao.replaceEmployees(ad); // Asegúrate de que este método realmente actualice el empleado
+	                    adao.replaceEmployees(ad);
 	                    found = true;
 	                } catch (IOException e1) {
 	                    e1.printStackTrace();
@@ -245,6 +266,129 @@ public class Logic_view_register implements ActionListener
 			mv.setLocationRelativeTo(null);
 			iv.dispose();
 		}
+		
+		/*--------------------------------------------------------
+		 * Inicio de la interfaz de Clientes
+		 *-------------------------------------------------------- 
+		 * */
+		if (e.getSource() == mv.btn_customers)
+		{
+			cs.setVisible(true);
+			cs.setLocationRelativeTo(null);
+			mv.dispose();
+			updateListClients();
+		}
+		if (e.getSource() == cs.btn_addClient)
+		{
+			if (validateFClient())
+			{
+				client.setName(cs.txt_nameClient.getText());
+				client.setAddress(cs.txt_addressClient.getText());
+				client.setContact(cs.txt_contactClient.getText());
+				
+				try {
+					cdao.writeCustomers(client);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				JOptionPane.showMessageDialog(cs, "Cliente agregado");
+				updateListClients();
+			}
+		}
+		if (e.getSource() == cs.btn_searchClient)
+		{
+			client.setName(cs.txt_nameSearchClient.getText());
+			boolean found = false;
+			try {
+				customers = cdao.readerCustomers();
+				for (Client cl : customers)
+				{
+					if (cl.getName().equals(client.getName()))
+					{
+						found = true;
+						break;
+					}
+				}
+					if (found)
+					{
+						cs.lbl_findClient.setText("Encontrado");
+						cs.lbl_findClient.setForeground(Color.green);
+					}
+					else
+					{
+						cs.lbl_findClient.setText("No encontrado");
+						cs.lbl_findClient.setForeground(Color.red);
+					}
+				
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (e.getSource() == cs.btn_changeDatesClient)
+		{
+			String name = cs.txt_nameSearchClient.getText();
+			try {
+				customers = cdao.readerCustomers();
+				boolean found = false;
+				
+				for (Client cl : customers)
+				{
+					if (cl.getName().equals(name))
+					{
+						if(cs.rbd_addressClientChange.isSelected())
+						{
+							cl.setAddress(JOptionPane.showInputDialog(cs, "Nueva Direccion: "));
+						}
+						if(cs.rbd_contactClientChange.isSelected())
+						{
+							cl.setContact(JOptionPane.showInputDialog(cs, "Nuevo Contacto: "));
+						}
+						cdao.refreshClient(cl);
+						found = true;
+						break;
+					}
+				}
+				if (found)
+				{
+					JOptionPane.showMessageDialog(cs, "Datos cambiados correctamente");
+					updateListClients();
+				}
+				
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (e.getSource() == cs.btn_returnClient)
+		{
+			mv.setVisible(true);
+			mv.setLocationRelativeTo(null);
+			cs.dispose();
+		}
+		/*--------------------------------------------------------
+		 * Fin de La interfaz Cliente
+		 *-------------------------------------------------------- 
+		 * */
+	}
+	
+	private void updateListClients() 
+	{
+	    DefaultListModel<String> listModel = new DefaultListModel<>();
+	    int indice = 1;
+	    try {
+	        customers = cdao.readerCustomers();
+	        for (Client cl : customers) 
+	        {
+	            listModel.addElement(indice+ ". " + cl.getName() +" | "+ cl.getContact());
+	            indice++;
+	        }
+	        indice = 0;
+	        cs.lst_customers.setModel(listModel);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	public boolean validate()
@@ -294,6 +438,38 @@ public class Logic_view_register implements ActionListener
 	    return estate;
 	}
 	
+	public boolean validateFClient ()
+	{
+		boolean estate = true;
+		if (ValidateFields.validateNames(cs.txt_nameClient.getText()))
+		{
+			cs.txt_nameClient.setBackground(Color.green);
+		}
+		else
+		{
+			cs.txt_nameClient.setBackground(Color.red);
+			estate = false;
+		}
+		if (ValidateFields.validateAddress(cs.txt_addressClient.getText()))
+		{
+			cs.txt_addressClient.setBackground(Color.green);
+		}
+		else
+		{
+			cs.txt_addressClient.setBackground(Color.red);
+			estate = false;
+		}
+		if (ValidateFields.validateContact(cs.txt_contactClient.getText()))
+		{
+			cs.txt_contactClient.setBackground(Color.green);
+		}
+		else
+		{
+			cs.txt_contactClient.setBackground(Color.red);
+			estate = false;
+		}
+		return estate;
+	}
 	public boolean validateProduct ()
 	{
 		boolean estate = true;
