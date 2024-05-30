@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import model.Product;
 import model.ProductDAO;
 import viewer.Admin_viewer;
 import viewer.Customers;
+import viewer.Egress;
 import viewer.Inventory;
 import viewer.Login;
 import viewer.Main_viewer;
@@ -35,12 +37,14 @@ public class Logic_view_register implements ActionListener
 	private Login log;
 	private Inventory iv;
 	private Customers cs;
+	private Egress eg;
 	private Files photo = new Files ("");
 	Admin_viewer av = new Admin_viewer();
 	Admin admin = new Admin();
 	AdminDAO adao = new AdminDAO();
 	List <Admin> employees = new ArrayList();
 	List <Client> customers = new ArrayList();
+	List <Product> products = new ArrayList();
 	
 	Product product = new Product ();
 	ProductDAO pdao = new ProductDAO ();
@@ -48,16 +52,21 @@ public class Logic_view_register implements ActionListener
 	Client client = new Client ();
 	ClientDAO cdao = new ClientDAO ();
 	
-	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs)
+	private double discount;
+	private DecimalFormat decimalFormat = new DecimalFormat("#.00");
+	
+	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg)
 	{
 		this.iv = iv;
 		this.mv = mv;
 		this.av = av;
 		this.log = log;
 		this.cs = cs;
+		this.eg = eg;
 		this.mv.btn_inventory.addActionListener(this);
 		this.mv.btn_customers.addActionListener(this);
 		this.mv.btn_signOut.addActionListener(this);
+		this.mv.btn_Egress.addActionListener(this);
 		
 		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
@@ -74,6 +83,11 @@ public class Logic_view_register implements ActionListener
 		this.cs.btn_searchClient.addActionListener(this);
 		this.cs.btn_changeDatesClient.addActionListener(this);
 		this.cs.btn_returnClient.addActionListener(this);
+		
+		this.eg.btn_discount.addActionListener(this);
+		this.eg.btn_calculateTotal.addActionListener(this);
+		this.eg.btn_acceptEgress.addActionListener(this);
+		this.eg.btn_returnEgress.addActionListener(this);
 	}
 	
 	public Logic_view_register ()
@@ -371,6 +385,109 @@ public class Logic_view_register implements ActionListener
 		 * Fin de La interfaz Cliente
 		 *-------------------------------------------------------- 
 		 * */
+		
+		/*-------------------------------------------------------- 
+		 * Inicio de la interfaz de Punto de venta
+		 * -------------------------------------------------------- 
+		 * */
+		if (e.getSource() == mv.btn_Egress)
+		{
+			eg.setVisible(true);
+			eg.setLocationRelativeTo(null);
+			mv.dispose();
+			loadProducts();
+			loadCustomers();
+		}
+		
+		if (e.getSource() == eg.btn_discount)
+		{
+			if (eg.cmb_customers.getSelectedItem() != null || eg.cmb_products.getSelectedItem() != null)
+			{
+				discount = discountType();
+				
+				eg.lbl_discountType.setText("<html><font color='blue'>Descuento: <font color='purple'>" + discount + "</font></html>");
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(eg, "Debe seleccionar un producto y un cliente.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+		if (e.getSource() == eg.btn_calculateTotal) 
+		{
+			String productName = (String) eg.cmb_products.getSelectedItem();
+			int quantity = (int) eg.spn_stock.getValue();
+			try {
+				products = pdao.readerProducts();
+				for (Product pd : products)
+				{
+					if (pd.getName().equals(productName))
+					 {
+							 double total = total(pd.getPrice(), discount, quantity);
+							 eg.lbl_tax.setText("<html>IVA: <font color='purple'>" + decimalFormat.format(calculateIva(pd.getPrice(), discount)) + "$</font></html>");
+				             eg.lbl_total.setText(decimalFormat.format(total) + "$");
+				             eg.lbl_total.setForeground(Color.blue);
+				             break;
+						 
+					 }
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(eg, "Error al procesar la venta", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
+			
+		}
+		
+		if (e.getSource() == eg.btn_acceptEgress)
+		{
+		    String productName = (String) eg.cmb_products.getSelectedItem();
+		    int quantitySold = (int) eg.spn_stock.getValue();
+
+		    try {
+		        products = pdao.readerProducts();
+
+		        for (Product pd : products) 
+		        {
+		            if (pd.getName().equals(productName)) 
+		            {
+		            	if(pd.getStock() < quantitySold)
+						{
+							JOptionPane.showMessageDialog(eg, "Error al procesar, el stock supera al numero del inventario", "Error", JOptionPane.ERROR_MESSAGE);
+							break;
+						}
+		            	else
+		            	{
+		            		int updatedStock = pd.getStock() - quantitySold;
+			                pd.setStock(updatedStock);
+
+			                pdao.replaceProducts(pd);
+
+			                JOptionPane.showMessageDialog(eg, "Venta procesada correctamente");
+							mv.setVisible(true);
+							mv.setLocationRelativeTo(null);
+							eg.dispose();
+			                break;
+		            	}
+		                
+		            }
+		        }
+		    } catch (IOException e1) {
+		        e1.printStackTrace();
+		        JOptionPane.showMessageDialog(eg, "Error al procesar la venta", "Error", JOptionPane.ERROR_MESSAGE);
+		    }
+		}
+		if (e.getSource() == eg.btn_returnEgress)
+		{
+			mv.setVisible(true);
+			mv.setLocationRelativeTo(null);
+			eg.dispose();
+		}
+		/*--------------------------------------------------------
+		 * Fin de la interfaz de Egreso
+		 * --------------------------------------------------------
+		 * */
 	}
 	
 	private void updateListClients() 
@@ -391,6 +508,67 @@ public class Logic_view_register implements ActionListener
 	    }
 	}
 	
+	private void loadProducts ()
+	{
+		try {
+			products = pdao.readerProducts();
+			for (Product pd : products)
+			{
+				eg.cmb_products.addItem(pd.getName());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(eg, "Non-existent products", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	private void loadCustomers ()
+	{
+		try {
+			customers = cdao.readerCustomers();
+			for (Client cl : customers)
+			{
+				eg.cmb_customers.addItem(cl.getName());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(eg, "Non-existent customers", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	private double discountType ()
+	{
+		int type = (int) (Math.random() * 3) + 1;
+		double discount = 0.0;
+		
+		if (type == 1)
+		{
+			discount = 23.5;
+			JOptionPane.showMessageDialog(eg, "[1] Asombroso, tu descuento es de: " + discount);
+		}
+		else if (type == 2)
+		{
+			discount = 30.0;
+			JOptionPane.showMessageDialog(eg, "[2] Asombroso, tu descuento es de: " + discount);
+		}
+		else
+		{
+			discount = 33.2;
+			JOptionPane.showMessageDialog(eg, "[3] Asombroso, tu descuento es de: " + discount);
+		}
+		return discount;
+	}
+
+	private double calculateIva(double price, double discount) 
+	{
+	    double discountedPrice = price - (price * (discount / 100));
+	    double iva = discountedPrice * 0.12; // IVA del 12%
+	    return iva;
+	}
+	private double total(double price, double discount, int quantity) 
+	{
+	    double discountedPrice = price - (price * (discount / 100));
+	    double iva = calculateIva(price, discount);
+	    return (discountedPrice + iva) * quantity;
+	}
 	public boolean validate()
 	{
 	    boolean estate = true;

@@ -3,6 +3,7 @@ package model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,5 +54,32 @@ public class ProductDAO implements Path
 	{
 		List <Product> products = readerProducts();
 		return products.size();
+	}
+	
+	public boolean replaceProducts (Product p) throws IOException
+	{
+		List <Product> products = readerProducts();
+//		file.setFile(new File(Path2, infoProducts));
+		boolean found = false;
+		for (int i=0 ; i<products.size() ; i++)
+		{
+			if (products.get(i).getName().equals(p.getName()))
+			{
+				products.set(i, p);
+				found = true;
+				break;
+			}
+		}
+		if (found)
+		{
+			file.setFile(new File(Path2, infoProducts));
+			FileWriter writer = new FileWriter(file.getFile(), false);
+			for (Product pd : products) 
+            {
+                writer.write(pd.saveProducts() + "\n");
+            }
+			writer.close();
+		}
+		return found;
 	}
 }

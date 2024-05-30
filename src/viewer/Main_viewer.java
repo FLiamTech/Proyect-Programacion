@@ -22,7 +22,6 @@ public class Main_viewer extends JFrame {
 	public JButton btn_inventory;
 	public JButton btn_manager;
 	public JButton btn_customers;
-	public JButton btn_shell;
 	public JLabel lbl_photo;
 	public JLabel lblDni;
 	public JLabel lbl_dniEmployee;
@@ -30,6 +29,7 @@ public class Main_viewer extends JFrame {
 	public JLabel lbl_codeEmployee;
 	public JButton btn_signOut;
 	public JLabel lbl_nameEmployee;
+	public JButton btn_Egress;
 
 	/**
 	 * Launch the application.
@@ -72,9 +72,9 @@ public class Main_viewer extends JFrame {
 		btn_inventory.setBounds(10, 24, 169, 96);
 		panel.add(btn_inventory);
 		
-		btn_shell = new JButton("Punto de venta");
-		btn_shell.setBounds(189, 24, 170, 140);
-		panel.add(btn_shell);
+		btn_Egress = new JButton("Punto de venta");
+		btn_Egress.setBounds(189, 24, 170, 140);
+		panel.add(btn_Egress);
 		
 		btn_manager = new JButton("Gestion de Proveedor");
 		btn_manager.setBounds(9, 175, 170, 140);

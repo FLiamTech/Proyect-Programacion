@@ -60,7 +60,8 @@ public class AdminDAO implements Path
 	    List<Admin> employee = new ArrayList<>();
 	    file.setFile(new File(Path, infoEmployees));
 	    
-	    try (BufferedReader reader = new BufferedReader(new FileReader(file.getFile()))) {
+	    try (BufferedReader reader = new BufferedReader(new FileReader(file.getFile()))) 
+	    {
 	        String line;
 	        while ((line = reader.readLine()) != null) 
 	        {

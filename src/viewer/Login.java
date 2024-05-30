@@ -80,8 +80,9 @@ public class Login extends JFrame {
 		file.create(0);
 		Inventory iv = new Inventory();
 		Customers cs = new Customers();
+		Egress eg = new Egress();
 		Main_viewer mv = new Main_viewer();
 		Admin_viewer av = new Admin_viewer();
-		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs);
+		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs, eg);
 	}
 }
