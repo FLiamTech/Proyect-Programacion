@@ -26,6 +26,7 @@ public class Egress extends JFrame {
 	public JSpinner spn_stock;
 	public JLabel lbl_discountType;
 	public JButton btn_discount;
+	public JLabel lbl_numStock;
 
 	/**
 	 * Launch the application.
@@ -70,7 +71,7 @@ public class Egress extends JFrame {
 		panel.add(lblCliente);
 		
 		JLabel lblStock = new JLabel("Stock:");
-		lblStock.setBounds(10, 99, 60, 14);
+		lblStock.setBounds(10, 117, 60, 14);
 		panel.add(lblStock);
 		
 		cmb_products = new JComboBox();
@@ -82,7 +83,7 @@ public class Egress extends JFrame {
 		panel.add(cmb_customers);
 		
 		spn_stock = new JSpinner();
-		spn_stock.setBounds(131, 96, 60, 20);
+		spn_stock.setBounds(131, 114, 60, 20);
 		panel.add(spn_stock);
 		
 		JLabel lblAplicarDescuento = new JLabel("Aplicar Descuento!");
@@ -96,6 +97,14 @@ public class Egress extends JFrame {
 		lbl_discountType = new JLabel("Desconocido");
 		lbl_discountType.setBounds(315, 99, 119, 14);
 		panel.add(lbl_discountType);
+		
+		JLabel lblNewLabel_2 = new JLabel("Num de productos:");
+		lblNewLabel_2.setBounds(10, 92, 119, 14);
+		panel.add(lblNewLabel_2);
+		
+		lbl_numStock = new JLabel("Desconocido");
+		lbl_numStock.setBounds(131, 89, 96, 14);
+		panel.add(lbl_numStock);
 		
 		SpinnerNumberModel priceModel = new SpinnerNumberModel(0.0, 0.0, 1000.0, 0.01);
 		

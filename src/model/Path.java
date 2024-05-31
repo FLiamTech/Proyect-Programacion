@@ -20,4 +20,9 @@ public interface Path
 	
 	public final String PATH_CUSTOMERS = PathMain + "/clientes";
 	public final String infoCustomers = "Registro_clientes.txt";
+	
+	// path de Registro
+	
+	public final String PATH_REGISTER = PathMain + "/registro";
+	public final String infoRegister = "Registro_egreso.txt";
 }

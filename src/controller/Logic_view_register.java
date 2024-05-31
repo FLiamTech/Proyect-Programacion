@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -24,12 +27,15 @@ import model.Client;
 import model.ClientDAO;
 import model.Product;
 import model.ProductDAO;
+import model.Register;
+import model.RegisterDAO;
 import viewer.Admin_viewer;
 import viewer.Customers;
 import viewer.Egress;
 import viewer.Inventory;
 import viewer.Login;
 import viewer.Main_viewer;
+import viewer.Record;
 
 public class Logic_view_register implements ActionListener
 {
@@ -38,13 +44,16 @@ public class Logic_view_register implements ActionListener
 	private Inventory iv;
 	private Customers cs;
 	private Egress eg;
+	private Record rc;
 	private Files photo = new Files ("");
 	Admin_viewer av = new Admin_viewer();
 	Admin admin = new Admin();
 	AdminDAO adao = new AdminDAO();
+	
 	List <Admin> employees = new ArrayList();
 	List <Client> customers = new ArrayList();
 	List <Product> products = new ArrayList();
+	List <Register> record = new ArrayList();
 	
 	Product product = new Product ();
 	ProductDAO pdao = new ProductDAO ();
@@ -52,10 +61,14 @@ public class Logic_view_register implements ActionListener
 	Client client = new Client ();
 	ClientDAO cdao = new ClientDAO ();
 	
-	private double discount;
+	private int discount;
 	private DecimalFormat decimalFormat = new DecimalFormat("#.00");
 	
-	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg)
+	private int countEgree = 0;
+	Register register = new Register ();
+	RegisterDAO rdao = new RegisterDAO ();
+	
+	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg, Record rc)
 	{
 		this.iv = iv;
 		this.mv = mv;
@@ -63,10 +76,12 @@ public class Logic_view_register implements ActionListener
 		this.log = log;
 		this.cs = cs;
 		this.eg = eg;
+		this.rc = rc;
 		this.mv.btn_inventory.addActionListener(this);
 		this.mv.btn_customers.addActionListener(this);
 		this.mv.btn_signOut.addActionListener(this);
 		this.mv.btn_Egress.addActionListener(this);
+		this.mv.btn_record.addActionListener(this);
 		
 		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
@@ -88,6 +103,15 @@ public class Logic_view_register implements ActionListener
 		this.eg.btn_calculateTotal.addActionListener(this);
 		this.eg.btn_acceptEgress.addActionListener(this);
 		this.eg.btn_returnEgress.addActionListener(this);
+		this.eg.cmb_products.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) 
+            {
+                stock();
+            }
+		});
+		
+		this.rc.btn_returnRegister.addActionListener(this);
+		
 	}
 	
 	public Logic_view_register ()
@@ -239,6 +263,7 @@ public class Logic_view_register implements ActionListener
 			iv.setVisible(true);
 			iv.setLocationRelativeTo(null);
 			mv.dispose();
+			cleanProductsField ();
 			
 			int numProductos;
 			try {
@@ -397,6 +422,7 @@ public class Logic_view_register implements ActionListener
 			mv.dispose();
 			loadProducts();
 			loadCustomers();
+			stock();
 		}
 		
 		if (e.getSource() == eg.btn_discount)
@@ -442,6 +468,22 @@ public class Logic_view_register implements ActionListener
 		
 		if (e.getSource() == eg.btn_acceptEgress)
 		{
+			String getSelectItem = (String) eg.cmb_products.getSelectedItem();
+			String getSelectClient = (String) eg.cmb_customers.getSelectedItem();
+			int getStock = (int) eg.spn_stock.getValue();
+			String date = getDate();
+			
+			register.setNameProduct(getSelectItem);
+			register.setClient(getSelectClient);
+			register.setStockEgree(getStock);
+			register.setDate(date);
+			
+			try {
+				rdao.writeRegister(register);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		    String productName = (String) eg.cmb_products.getSelectedItem();
 		    int quantitySold = (int) eg.spn_stock.getValue();
 
@@ -455,6 +497,7 @@ public class Logic_view_register implements ActionListener
 		            	if(pd.getStock() < quantitySold)
 						{
 							JOptionPane.showMessageDialog(eg, "Error al procesar, el stock supera al numero del inventario", "Error", JOptionPane.ERROR_MESSAGE);
+							stock();
 							break;
 						}
 		            	else
@@ -468,9 +511,9 @@ public class Logic_view_register implements ActionListener
 							mv.setVisible(true);
 							mv.setLocationRelativeTo(null);
 							eg.dispose();
+							countEgree += 1;
 			                break;
 		            	}
-		                
 		            }
 		        }
 		    } catch (IOException e1) {
@@ -488,6 +531,25 @@ public class Logic_view_register implements ActionListener
 		 * Fin de la interfaz de Egreso
 		 * --------------------------------------------------------
 		 * */
+		/*--------------------------------------------------------
+		 * Inicio de la interfaz del registro de ventas
+		 * --------------------------------------------------------
+		 * */
+		if (e.getSource() == mv.btn_record)
+		{
+			rc.setVisible(true);
+			rc.setLocationRelativeTo(null);
+			mv.dispose();
+			rc.lbl_numEgree.setText(String.valueOf(countEgree));
+			rc.lbl_numEgree.setForeground(Color.magenta);
+			listEgree();
+		}
+		if (e.getSource() == rc.btn_returnRegister)
+		{
+			mv.setVisible(true);
+			mv.setLocationRelativeTo(null);
+			rc.dispose();
+		}
 	}
 	
 	private void updateListClients() 
@@ -508,10 +570,36 @@ public class Logic_view_register implements ActionListener
 	    }
 	}
 	
+	private void listEgree ()
+	{
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		int indice = 1;
+		
+		try {
+	        record = rdao.readerRegister();
+	        
+	        for (Register rg : record) {
+	            String listItem = "<html><b>Registro " + indice + "</b><br>";
+	            listItem += "<font color='blue'>Fecha:</font> " + rg.getDate() + "<br>";
+	            listItem += "<font color='green'>Producto:</font> " + rg.getNameProduct() + "<br>";
+	            listItem += "<font color='red'>Stock:</font> " + rg.getStockEgree() + "<br>";
+	            listItem += "<font color='purple'>Cliente:</font> " + rg.getClient() + "<br>";
+	            listItem += "</html>";
+	            
+	            listModel.addElement(listItem);
+	            indice++;
+	        }
+	        indice = 0;
+	        rc.lst_register.setModel(listModel);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 	private void loadProducts ()
 	{
 		try {
 			products = pdao.readerProducts();
+			eg.cmb_products.removeAllItems();
 			for (Product pd : products)
 			{
 				eg.cmb_products.addItem(pd.getName());
@@ -525,6 +613,7 @@ public class Logic_view_register implements ActionListener
 	{
 		try {
 			customers = cdao.readerCustomers();
+			eg.cmb_customers.removeAllItems();
 			for (Client cl : customers)
 			{
 				eg.cmb_customers.addItem(cl.getName());
@@ -534,24 +623,24 @@ public class Logic_view_register implements ActionListener
 			JOptionPane.showMessageDialog(eg, "Non-existent customers", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	private double discountType ()
+	private int discountType ()
 	{
 		int type = (int) (Math.random() * 3) + 1;
-		double discount = 0.0;
+		int discount = 0;
 		
 		if (type == 1)
 		{
-			discount = 23.5;
+			discount = 5;
 			JOptionPane.showMessageDialog(eg, "[1] Asombroso, tu descuento es de: " + discount);
 		}
 		else if (type == 2)
 		{
-			discount = 30.0;
+			discount = 7;
 			JOptionPane.showMessageDialog(eg, "[2] Asombroso, tu descuento es de: " + discount);
 		}
 		else
 		{
-			discount = 33.2;
+			discount = 9;
 			JOptionPane.showMessageDialog(eg, "[3] Asombroso, tu descuento es de: " + discount);
 		}
 		return discount;
@@ -569,6 +658,34 @@ public class Logic_view_register implements ActionListener
 	    double iva = calculateIva(price, discount);
 	    return (discountedPrice + iva) * quantity;
 	}
+	private void stock ()
+	{
+		String selectedProduct = (String) eg.cmb_products.getSelectedItem();
+	    if (selectedProduct != null) 
+	    {
+	        try {
+	            products = pdao.readerProducts();
+	            for (Product pd : products) 
+	            {
+	                if (pd.getName().equals(selectedProduct)) 
+	                {
+	                    eg.lbl_numStock.setText(String.valueOf(pd.getStock()));
+	                    break;
+	                }
+	            }
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(eg, "Error al leer los productos", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+	}
+	private String getDate()
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        Date date = new Date();
+        return formatter.format(date);
+    }
+	
 	public boolean validate()
 	{
 	    boolean estate = true;
@@ -706,5 +823,14 @@ public class Logic_view_register implements ActionListener
 		av.pwd_newPassword.setText("");
 		av.lbl_estate.setText("Desconocido");
 		av.lbl_estate.setForeground(Color.black);
+	}
+	
+	public void cleanProductsField ()
+	{
+		iv.txt_nameProduct.setText("");
+		iv.txt_nameProduct.setBackground(Color.white);
+		iv.txtp_description.setText("");
+		iv.spn_price.setValue(0);
+		iv.spn_stock.setValue(0);
 	}
 }

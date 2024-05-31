@@ -30,6 +30,7 @@ public class Main_viewer extends JFrame {
 	public JButton btn_signOut;
 	public JLabel lbl_nameEmployee;
 	public JButton btn_Egress;
+	public JButton btn_record;
 
 	/**
 	 * Launch the application.
@@ -73,7 +74,7 @@ public class Main_viewer extends JFrame {
 		panel.add(btn_inventory);
 		
 		btn_Egress = new JButton("Punto de venta");
-		btn_Egress.setBounds(189, 24, 170, 140);
+		btn_Egress.setBounds(189, 53, 170, 111);
 		panel.add(btn_Egress);
 		
 		btn_manager = new JButton("Gestion de Proveedor");
@@ -83,6 +84,10 @@ public class Main_viewer extends JFrame {
 		btn_customers = new JButton("Gestion de clientes");
 		btn_customers.setBounds(189, 175, 170, 140);
 		panel.add(btn_customers);
+		
+		btn_record = new JButton("Registro");
+		btn_record.setBounds(189, 24, 170, 23);
+		panel.add(btn_record);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Profile", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
