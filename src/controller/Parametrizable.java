@@ -11,4 +11,8 @@ public interface Parametrizable
 	
 	public final String ERAddress = "^[A-Za-z\s]+,\s?[A-Za-z\s]+,\s?[A-Za-z\s]+$";
 	public final String ERContact = "^(09|10)[0-9]{8}$";
+	
+	public final String ERNameSup = "^([A-Z][a-zá-ú]{2,}\s?){4}$";
+	public final String EREmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+	public final String ERBusinessName = "^([A-Za-zá-úÁ-Ú]+(s[A-Za-zá-úÁ-Ú]+)?.?s?){1,4}$";
 }

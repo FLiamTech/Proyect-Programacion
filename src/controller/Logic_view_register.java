@@ -29,6 +29,8 @@ import model.Product;
 import model.ProductDAO;
 import model.Register;
 import model.RegisterDAO;
+import model.SupplierDAO;
+import model.Suppliers;
 import viewer.Admin_viewer;
 import viewer.Customers;
 import viewer.Egress;
@@ -36,6 +38,7 @@ import viewer.Inventory;
 import viewer.Login;
 import viewer.Main_viewer;
 import viewer.Record;
+import viewer.Supplier;
 
 public class Logic_view_register implements ActionListener
 {
@@ -45,15 +48,17 @@ public class Logic_view_register implements ActionListener
 	private Customers cs;
 	private Egress eg;
 	private Record rc;
+	private Supplier sp;
 	private Files photo = new Files ("");
 	Admin_viewer av = new Admin_viewer();
 	Admin admin = new Admin();
 	AdminDAO adao = new AdminDAO();
-	
+	// List que contrendran la lectura de cada archivo de texto
 	List <Admin> employees = new ArrayList();
 	List <Client> customers = new ArrayList();
 	List <Product> products = new ArrayList();
 	List <Register> record = new ArrayList();
+	List <Suppliers> suppliers = new ArrayList();
 	
 	Product product = new Product ();
 	ProductDAO pdao = new ProductDAO ();
@@ -62,56 +67,67 @@ public class Logic_view_register implements ActionListener
 	ClientDAO cdao = new ClientDAO ();
 	
 	private int discount;
-	private DecimalFormat decimalFormat = new DecimalFormat("#.00");
+	private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 	
 	private int countEgree = 0;
 	Register register = new Register ();
 	RegisterDAO rdao = new RegisterDAO ();
 	
-	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg, Record rc)
+	Suppliers supplier = new Suppliers ();
+	SupplierDAO sdao = new SupplierDAO();
+	
+	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg, Record rc, Supplier sp)
 	{
-		this.iv = iv;
-		this.mv = mv;
-		this.av = av;
-		this.log = log;
-		this.cs = cs;
-		this.eg = eg;
-		this.rc = rc;
+		this.iv = iv;	// Inventario
+		this.mv = mv;	// Main_viewer
+		this.av = av;	// Inventario
+		this.log = log;	// Login
+		this.cs = cs;	// Customers
+		this.eg = eg;	// Egree
+		this.rc = rc;	// Register
+		this.sp = sp;	// Supplier
+
+		// Botones del main Viewer
 		this.mv.btn_inventory.addActionListener(this);
 		this.mv.btn_customers.addActionListener(this);
 		this.mv.btn_signOut.addActionListener(this);
 		this.mv.btn_Egress.addActionListener(this);
 		this.mv.btn_record.addActionListener(this);
-		
+		this.mv.btn_supplier.addActionListener(this);
+		// Botones del admin Viewer
 		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
 		this.av.btn_accept.addActionListener(this);
 		this.av.btn_create.addActionListener(this);
 		this.av.btn_photo.addActionListener(this);
-		
+		// Botones del login
 		this.log.btn_enter.addActionListener(this);
-		
+		this.log.btn_goOut.addActionListener(this);
+		// Botones del inventario
 		this.iv.btn_addProduct.addActionListener(this);
 		this.iv.btn_return.addActionListener(this);
-		
+		// Botones de customers
 		this.cs.btn_addClient.addActionListener(this);
 		this.cs.btn_searchClient.addActionListener(this);
 		this.cs.btn_changeDatesClient.addActionListener(this);
 		this.cs.btn_returnClient.addActionListener(this);
-		
+		// Botones del egreso
 		this.eg.btn_discount.addActionListener(this);
 		this.eg.btn_calculateTotal.addActionListener(this);
 		this.eg.btn_acceptEgress.addActionListener(this);
 		this.eg.btn_returnEgress.addActionListener(this);
+		// Funcion que actualiza el stock de cada producto
 		this.eg.cmb_products.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) 
             {
                 stock();
             }
 		});
-		
+		// Botones del register
 		this.rc.btn_returnRegister.addActionListener(this);
-		
+		// Botones del supllier
+		this.sp.btn_addSupplier.addActionListener(this);
+		this.sp.btn_returnSupplier.addActionListener(this);
 	}
 	
 	public Logic_view_register ()
@@ -121,6 +137,10 @@ public class Logic_view_register implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
+		/*--------------------------------------------------------
+		 * Funciones de la ventana de logeo, incluido el sing out del main Viewer
+		 * --------------------------------------------------------
+		 * */
 		if (e.getSource() == log.btn_enter)
 		{
 			String enteredUser = log.txt_user.getText();
@@ -134,7 +154,11 @@ public class Logic_view_register implements ActionListener
 				cleanResetPass();
 				return;
 			}
-            employees = adao.readerEmployees();
+            try {
+				employees = adao.readerEmployees();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+			}
     		for (Admin ad : employees)
     		{
     			if (enteredUser.equals(ad.getUser()) && enteredPassword.equals(ad.getPassword()))
@@ -155,6 +179,13 @@ public class Logic_view_register implements ActionListener
     		}
     		JOptionPane.showMessageDialog(log, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
 		}
+		if (e.getSource() == log.btn_goOut)
+		{
+			int response = JOptionPane.showConfirmDialog(log, "Seguro que desea salir?", "Go Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (response == JOptionPane.YES_OPTION) {
+                log.dispose();
+            }
+		}
 		if (e.getSource() == mv.btn_signOut)
 		{
 			log.setVisible(true);
@@ -162,6 +193,10 @@ public class Logic_view_register implements ActionListener
 			mv.dispose();
 			cleanLogin();
 		}
+		/*--------------------------------------------------------
+		 * Funciones de la interfaz del administrador
+		 * --------------------------------------------------------
+		 * */
 		if(e.getSource() == av.btn_photo)
 		{
 			photo.getFileChooser(av, "jpeg");
@@ -199,7 +234,12 @@ public class Logic_view_register implements ActionListener
 		if(e.getSource() == av.btn_searchEmployee)
 		{
 			admin.setDni(av.txt_dniEmployeeAux.getText());
-			employees = adao.readerEmployees();
+			try {
+				employees = adao.readerEmployees();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(mv, "no Employees created", "First", JOptionPane.INFORMATION_MESSAGE);
+			}
 			boolean find = false;
 			for (Admin ad : employees)
 			{
@@ -223,7 +263,12 @@ public class Logic_view_register implements ActionListener
 	        String dni = av.txt_dniEmployeeAux.getText();
 	        String newPassword = new String(av.pwd_newPassword.getPassword());
 	        
-	        employees = adao.readerEmployees();
+	        try {
+				employees = adao.readerEmployees();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(mv, "First Time to enter", "First", JOptionPane.ERROR_MESSAGE);
+			}
 	        
 	        boolean found = false;
 	        for (Admin ad : employees) 
@@ -258,12 +303,17 @@ public class Logic_view_register implements ActionListener
 			cleanLogin();
 			return;
 		}
+		/*--------------------------------------------------------
+		 * Inicio de la interfaz de inventario
+		 * --------------------------------------------------------
+		 * */
 		if (e.getSource() == mv.btn_inventory)
 		{
 			iv.setVisible(true);
 			iv.setLocationRelativeTo(null);
 			mv.dispose();
 			cleanProductsField ();
+			loadSuppliers();
 			
 			int numProductos;
 			try {
@@ -285,7 +335,8 @@ public class Logic_view_register implements ActionListener
 				product.setStock(stock);
 				double price = (double) iv.spn_price.getValue();
 				product.setPrice(price);
-				product.setSupplier("La favorita");
+				String supplier = (String) iv.cmb_supplier.getSelectedItem();
+				product.setSupplier(supplier);
 				try {
 					pdao.writeProducts(product);
 				} catch (IOException e1) {
@@ -305,7 +356,10 @@ public class Logic_view_register implements ActionListener
 			mv.setLocationRelativeTo(null);
 			iv.dispose();
 		}
-		
+		/*--------------------------------------------------------
+		 * Fin de la interfaz de inventario
+		 * --------------------------------------------------------
+		 * */
 		/*--------------------------------------------------------
 		 * Inicio de la interfaz de Clientes
 		 *-------------------------------------------------------- 
@@ -315,6 +369,7 @@ public class Logic_view_register implements ActionListener
 			cs.setVisible(true);
 			cs.setLocationRelativeTo(null);
 			mv.dispose();
+			cleanCustomers();
 			updateListClients();
 		}
 		if (e.getSource() == cs.btn_addClient)
@@ -332,6 +387,7 @@ public class Logic_view_register implements ActionListener
 					e1.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(cs, "Cliente agregado");
+				cleanCustomers ();
 				updateListClients();
 			}
 		}
@@ -362,7 +418,7 @@ public class Logic_view_register implements ActionListener
 				
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(mv, "First Time to enter", "First", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		if (e.getSource() == cs.btn_changeDatesClient)
@@ -397,7 +453,7 @@ public class Logic_view_register implements ActionListener
 				
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(mv, "no customers created", "First", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		if (e.getSource() == cs.btn_returnClient)
@@ -420,6 +476,7 @@ public class Logic_view_register implements ActionListener
 			eg.setVisible(true);
 			eg.setLocationRelativeTo(null);
 			mv.dispose();
+			cleanEgree();
 			loadProducts();
 			loadCustomers();
 			stock();
@@ -431,7 +488,7 @@ public class Logic_view_register implements ActionListener
 			{
 				discount = discountType();
 				
-				eg.lbl_discountType.setText("<html><font color='blue'>Descuento: <font color='purple'>" + discount + "</font></html>");
+				eg.lbl_discountType.setText("<html><font color='blue'>Descuento: <font color='purple'>" + discount + "%</font></html>");
 			}
 			else
 			{
@@ -459,31 +516,12 @@ public class Logic_view_register implements ActionListener
 				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
 				JOptionPane.showMessageDialog(eg, "Error al procesar la venta", "Error", JOptionPane.ERROR_MESSAGE);
-			}
-			
-			
+			}	
 		}
 		
 		if (e.getSource() == eg.btn_acceptEgress)
 		{
-			String getSelectItem = (String) eg.cmb_products.getSelectedItem();
-			String getSelectClient = (String) eg.cmb_customers.getSelectedItem();
-			int getStock = (int) eg.spn_stock.getValue();
-			String date = getDate();
-			
-			register.setNameProduct(getSelectItem);
-			register.setClient(getSelectClient);
-			register.setStockEgree(getStock);
-			register.setDate(date);
-			
-			try {
-				rdao.writeRegister(register);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		    String productName = (String) eg.cmb_products.getSelectedItem();
 		    int quantitySold = (int) eg.spn_stock.getValue();
 
@@ -502,6 +540,23 @@ public class Logic_view_register implements ActionListener
 						}
 		            	else
 		            	{
+		            		String getSelectItem = (String) eg.cmb_products.getSelectedItem();
+		        			String getSelectClient = (String) eg.cmb_customers.getSelectedItem();
+		        			int getStock = (int) eg.spn_stock.getValue();
+		        			String date = getDate();
+		        			
+		        			register.setNameProduct(getSelectItem);
+		        			register.setClient(getSelectClient);
+		        			register.setStockEgree(getStock);
+		        			register.setDate(date);
+		        			
+		        			try {
+		        				rdao.writeRegister(register);
+		        			} catch (IOException e1) {
+		        				// TODO Auto-generated catch block
+		        				e1.printStackTrace();
+		        			}
+		        			
 		            		int updatedStock = pd.getStock() - quantitySold;
 			                pd.setStock(updatedStock);
 
@@ -550,8 +605,61 @@ public class Logic_view_register implements ActionListener
 			mv.setLocationRelativeTo(null);
 			rc.dispose();
 		}
+		/*--------------------------------------------------------
+		 * Fin de la interfaz de registro de ventas
+		 * --------------------------------------------------------
+		 * */
+		/*--------------------------------------------------------
+		 * Inicio de la interface de Proveedores
+		 * --------------------------------------------------------
+		 * */
+		if (e.getSource() == mv.btn_supplier)
+		{
+			sp.setVisible(true);
+			sp.setLocationRelativeTo(null);
+			mv.dispose();
+			cleanSupplier();
+			updateListSuppliers();
+		}
+		
+		if (e.getSource() == sp.btn_addSupplier)
+		{
+			if (validateSupplier())
+			{
+				supplier.setName(sp.txt_nameSupplier.getText());
+				supplier.setEmail(sp.txt_emailSupplier.getText());
+				supplier.setDni(sp.txt_dniSupplier.getText());
+				supplier.setPhone(sp.txt_phoneSupplier.getText());
+				supplier.setBusinessName(sp.txt_businessName.getText());
+				supplier.setCode(new String (sp.pwf_codeSupplier.getPassword()));
+				
+				try {
+					sdao.writeSupplier(supplier);
+					JOptionPane.showMessageDialog(sp, "Proveedor agregado correctamente");
+					mv.setVisible(true);
+					mv.setLocationRelativeTo(null);
+					sp.dispose();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
+		if (e.getSource() == sp.btn_returnSupplier)
+		{
+			mv.setVisible(true);
+			mv.setLocationRelativeTo(null);
+			sp.dispose();
+		}
+		/*--------------------------------------------------------
+		 * Fin de la interfaz de proveedor
+		 * --------------------------------------------------------
+		 * */
 	}
-	
+	/*--------------------------------------------------------
+	 * Carga los datos en las diferentes tablas de las interfaces
+	 * --------------------------------------------------------
+	 * */
 	private void updateListClients() 
 	{
 	    DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -566,7 +674,7 @@ public class Logic_view_register implements ActionListener
 	        indice = 0;
 	        cs.lst_customers.setModel(listModel);
 	    } catch (IOException e) {
-	        e.printStackTrace();
+	    	JOptionPane.showMessageDialog(mv, "First Time to enter", "First", JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
 	
@@ -580,10 +688,10 @@ public class Logic_view_register implements ActionListener
 	        
 	        for (Register rg : record) {
 	            String listItem = "<html><b>Registro " + indice + "</b><br>";
-	            listItem += "<font color='blue'>Fecha:</font> " + rg.getDate() + "<br>";
-	            listItem += "<font color='green'>Producto:</font> " + rg.getNameProduct() + "<br>";
-	            listItem += "<font color='red'>Stock:</font> " + rg.getStockEgree() + "<br>";
-	            listItem += "<font color='purple'>Cliente:</font> " + rg.getClient() + "<br>";
+	            listItem += "<font color='brown'>Fecha:</font> " + rg.getDate() + "<br>";
+	            listItem += "<font color='yellow'>Producto:</font> " + rg.getNameProduct() + "<br>";
+	            listItem += "<font color='blue'>Stock:</font> " + rg.getStockEgree() + "<br>";
+	            listItem += "<font color='red'>Cliente:</font> " + rg.getClient() + "<br>";
 	            listItem += "</html>";
 	            
 	            listModel.addElement(listItem);
@@ -592,9 +700,33 @@ public class Logic_view_register implements ActionListener
 	        indice = 0;
 	        rc.lst_register.setModel(listModel);
 	    } catch (IOException e) {
-	        e.printStackTrace();
+	    	JOptionPane.showMessageDialog(mv, "First Time to enter", "First", JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
+	
+	private void updateListSuppliers ()
+	{
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		int indice = 1;
+		
+		try {
+			suppliers = sdao.readerSupplier();
+			for (Suppliers sp : suppliers)
+			{
+				listModel.addElement(indice + ". " + sp.getName() + " ; " + sp.getBusinessName());
+				indice ++;
+			}
+			indice = 0;
+			sp.lst_suppliers.setModel(listModel);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			
+		}
+	}
+	/*--------------------------------------------------------
+	 * Carga los datos en los combo box de las ventanas que lo requieran
+	 * --------------------------------------------------------
+	 * */
 	private void loadProducts ()
 	{
 		try {
@@ -623,6 +755,24 @@ public class Logic_view_register implements ActionListener
 			JOptionPane.showMessageDialog(eg, "Non-existent customers", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	private void loadSuppliers ()
+	{
+		try {
+			suppliers = sdao.readerSupplier();
+			iv.cmb_supplier.removeAllItems();
+			for (Suppliers sp : suppliers)
+			{
+				iv.cmb_supplier.addItem(sp.getName());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(eg, "Non-existent Suppliers", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	/*--------------------------------------------------------
+	 * Operaciones de la ventana de Egreso
+	 * --------------------------------------------------------
+	 * */
 	private int discountType ()
 	{
 		int type = (int) (Math.random() * 3) + 1;
@@ -646,13 +796,13 @@ public class Logic_view_register implements ActionListener
 		return discount;
 	}
 
-	private double calculateIva(double price, double discount) 
+	private double calculateIva(double price, int discount) 
 	{
 	    double discountedPrice = price - (price * (discount / 100));
 	    double iva = discountedPrice * 0.12; // IVA del 12%
 	    return iva;
 	}
-	private double total(double price, double discount, int quantity) 
+	private double total(double price, int discount, int quantity) 
 	{
 	    double discountedPrice = price - (price * (discount / 100));
 	    double iva = calculateIva(price, discount);
@@ -686,6 +836,10 @@ public class Logic_view_register implements ActionListener
         return formatter.format(date);
     }
 	
+	/*--------------------------------------------------------
+	 * Validar los campos con su respectiva expresion regular
+	 * --------------------------------------------------------
+	 * */
 	public boolean validate()
 	{
 	    boolean estate = true;
@@ -780,6 +934,69 @@ public class Logic_view_register implements ActionListener
 		return estate;
 	}
 	
+	public boolean validateSupplier ()
+	{
+		boolean estate = true;
+		if (ValidateFields.validateNameSup(sp.txt_nameSupplier.getText()))
+		{
+			sp.txt_nameSupplier.setBackground(Color.yellow);
+		}
+		else
+		{
+			sp.txt_nameSupplier.setBackground(Color.magenta);
+			estate = false;
+		}
+		if (ValidateFields.validateEmail(sp.txt_emailSupplier.getText()))
+		{
+			sp.txt_emailSupplier.setBackground(Color.yellow);
+		}
+		else
+		{
+			sp.txt_emailSupplier.setBackground(Color.magenta);
+			estate = false;
+		}
+		if (ValidateFields.validateDni(sp.txt_dniSupplier.getText()))
+		{
+			sp.txt_dniSupplier.setBackground(Color.yellow);
+		}
+		else
+		{
+			sp.txt_dniSupplier.setBackground(Color.magenta);
+			estate = false;
+		}
+		if (ValidateFields.validateContact(sp.txt_phoneSupplier.getText()))
+		{
+			sp.txt_phoneSupplier.setBackground(Color.yellow);
+		}
+		else
+		{
+			sp.txt_phoneSupplier.setBackground(Color.magenta);
+			estate = false;
+		}
+		if (ValidateFields.validateBusinessName(sp.txt_businessName.getText()))
+		{
+			sp.txt_businessName.setBackground(Color.yellow);
+		}
+		else
+		{
+			sp.txt_businessName.setBackground(Color.magenta);
+			estate = false;
+		}
+		if (ValidateFields.validateCode(new String (sp.pwf_codeSupplier.getPassword())))
+		{
+			sp.pwf_codeSupplier.setBackground(Color.yellow);
+		}
+		else
+		{
+			sp.pwf_codeSupplier.setBackground(Color.magenta);
+			estate = false;
+		}
+		return estate;
+	}
+	/*--------------------------------------------------------
+	 * Cargar, mostrar y guardar la foto
+	 * --------------------------------------------------------
+	 * */
 	private void loadPhoto (String path)
 	{
 		ImageIcon photo = new ImageIcon (path);
@@ -799,6 +1016,10 @@ public class Logic_view_register implements ActionListener
 		}
 		
 	}
+	/*--------------------------------------------------------
+	 * Funciones de limpieza de campos de cada interfaz
+	 * --------------------------------------------------------
+	 * */
 	public void cleanLogin ()
 	{
 		log.txt_user.setText("");
@@ -833,4 +1054,49 @@ public class Logic_view_register implements ActionListener
 		iv.spn_price.setValue(0);
 		iv.spn_stock.setValue(0);
 	}
+	
+	public void cleanSupplier ()
+	{
+		sp.txt_nameSupplier.setText("");
+		sp.txt_emailSupplier.setText("");
+		sp.txt_dniSupplier.setText("");
+		sp.txt_phoneSupplier.setText("");
+		sp.txt_businessName.setText("");
+		sp.pwf_codeSupplier.setText("");
+		sp.txt_nameSupplier.setBackground(Color.white);
+		sp.txt_emailSupplier.setBackground(Color.white);
+		sp.txt_dniSupplier.setBackground(Color.white);
+		sp.txt_phoneSupplier.setBackground(Color.white);
+		sp.txt_businessName.setBackground(Color.white);
+		sp.pwf_codeSupplier.setBackground(Color.white);
+	}
+	
+	public void cleanCustomers ()
+	{
+		cs.txt_addressClient.setText("");
+		cs.txt_contactClient.setText("");
+		cs.txt_nameClient.setText("");
+		cs.txt_nameSearchClient.setText("");
+		cs.lbl_findClient.setText("Desconocido");
+		cs.txt_addressClient.setBackground(Color.white);
+		cs.txt_contactClient.setBackground(Color.white);
+		cs.txt_nameClient.setBackground(Color.white);
+		cs.lbl_findClient.setForeground(Color.black);
+	}
+	
+	public void cleanEgree ()
+	{
+		eg.spn_stock.setValue(0);
+		eg.lbl_discountType.setText("Descuento");
+		eg.lbl_tax.setText("Descuento");
+		eg.lbl_total.setText("Total");
+		
+		eg.lbl_discountType.setForeground(Color.black);
+		eg.lbl_tax.setForeground(Color.black);
+		eg.lbl_total.setForeground(Color.black);
+	}
+	/*--------------------------------------------------------
+	 * Fin
+	 * --------------------------------------------------------
+	 * */
 }

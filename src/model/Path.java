@@ -25,4 +25,9 @@ public interface Path
 	
 	public final String PATH_REGISTER = PathMain + "/registro";
 	public final String infoRegister = "Registro_egreso.txt";
+	
+	// path de Proveedores
+	
+	public final String PATH_SUPPLIER = PathMain + "/proveedores";
+	public final String infoSupplier = "Registro_proveedores.txt";
 }

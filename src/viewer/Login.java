@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 
 public class Login extends JFrame {
 
@@ -21,7 +22,7 @@ public class Login extends JFrame {
 	public JTextField txt_user;
 	public JPasswordField pwf_pasword;
 	public JButton btn_enter;
-	public JLabel lbl_process;
+	public JButton btn_goOut;
 
 	/**
 	 * Launch the application.
@@ -72,9 +73,9 @@ public class Login extends JFrame {
 		btn_enter.setBounds(238, 90, 89, 23);
 		contentPane.add(btn_enter);
 		
-		lbl_process = new JLabel("*");
-		lbl_process.setBounds(24, 94, 204, 14);
-		contentPane.add(lbl_process);
+		btn_goOut = new JButton("Go out");
+		btn_goOut.setBounds(90, 90, 89, 23);
+		contentPane.add(btn_goOut);
 		
 		Files file = new Files ("C:/registroEmpleados");
 		file.create(0);
@@ -82,8 +83,9 @@ public class Login extends JFrame {
 		Customers cs = new Customers();
 		Egress eg = new Egress();
 		Record rc = new Record();
+		Supplier sp = new Supplier();
 		Main_viewer mv = new Main_viewer();
 		Admin_viewer av = new Admin_viewer();
-		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs, eg, rc);
+		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs, eg, rc, sp);
 	}
 }

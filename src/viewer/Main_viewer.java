@@ -20,7 +20,7 @@ public class Main_viewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	public JButton btn_inventory;
-	public JButton btn_manager;
+	public JButton btn_supplier;
 	public JButton btn_customers;
 	public JLabel lbl_photo;
 	public JLabel lblDni;
@@ -77,9 +77,9 @@ public class Main_viewer extends JFrame {
 		btn_Egress.setBounds(189, 53, 170, 111);
 		panel.add(btn_Egress);
 		
-		btn_manager = new JButton("Gestion de Proveedor");
-		btn_manager.setBounds(9, 175, 170, 140);
-		panel.add(btn_manager);
+		btn_supplier = new JButton("Gestion de Proveedor");
+		btn_supplier.setBounds(9, 175, 170, 140);
+		panel.add(btn_supplier);
 		
 		btn_customers = new JButton("Gestion de clientes");
 		btn_customers.setBounds(189, 175, 170, 140);

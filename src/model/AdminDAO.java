@@ -56,12 +56,11 @@ public class AdminDAO implements Path
         
         return found;
     }
-	public List<Admin> readerEmployees() {
+	public List<Admin> readerEmployees() throws IOException {
 	    List<Admin> employee = new ArrayList<>();
 	    file.setFile(new File(Path, infoEmployees));
 	    
-	    try (BufferedReader reader = new BufferedReader(new FileReader(file.getFile()))) 
-	    {
+	    BufferedReader reader = new BufferedReader(new FileReader(file.getFile()));
 	        String line;
 	        while ((line = reader.readLine()) != null) 
 	        {
@@ -82,10 +81,6 @@ public class AdminDAO implements Path
 	            }
 
 	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    
 	    return employee;
 	}
 }
