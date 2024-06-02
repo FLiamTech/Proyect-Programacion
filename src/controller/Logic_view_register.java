@@ -170,8 +170,8 @@ public class Logic_view_register implements ActionListener
     					mv.lbl_nameEmployee.setText(ad.getName());
     					mv.lbl_dniEmployee.setText(ad.getDni());
     					mv.lbl_codeEmployee.setText(ad.getCode());
-    					mv.lbl_nameEmployee.setForeground(Color.green);
-    					mv.lbl_dniEmployee.setForeground(Color.green);
+    					mv.lbl_nameEmployee.setForeground(Color.blue);
+    					mv.lbl_dniEmployee.setForeground(Color.blue);
     					mv.lbl_codeEmployee.setForeground(Color.magenta);
     					loadPhoto(ad.getPathImage());
     					return;

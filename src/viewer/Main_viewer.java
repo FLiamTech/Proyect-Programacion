@@ -14,6 +14,9 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class Main_viewer extends JFrame {
 
@@ -63,33 +66,46 @@ public class Main_viewer extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(new Color(167, 122, 123));
 		panel.setBorder(new TitledBorder(null, "Menu Options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.setBounds(10, 11, 371, 348);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
 		btn_inventory = new JButton("Gestion de Inventario");
-		btn_inventory.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\resources\\software-de-gestion-de-inventarios-ES-Capterra-Header.png"));
-		btn_inventory.setBounds(10, 24, 169, 96);
+		btn_inventory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btn_inventory.setBackground(new Color(255, 255, 255));
+		btn_inventory.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\agregar-producto.png"));
+		btn_inventory.setBounds(10, 24, 158, 140);
 		panel.add(btn_inventory);
 		
 		btn_Egress = new JButton("Punto de venta");
-		btn_Egress.setBounds(189, 53, 170, 111);
+		btn_Egress.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\de-venta.png"));
+		btn_Egress.setBounds(189, 53, 158, 111);
 		panel.add(btn_Egress);
 		
 		btn_supplier = new JButton("Gestion de Proveedor");
-		btn_supplier.setBounds(9, 175, 170, 140);
+		btn_supplier.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\proveedor.png"));
+		btn_supplier.setBounds(9, 175, 159, 140);
 		panel.add(btn_supplier);
 		
 		btn_customers = new JButton("Gestion de clientes");
-		btn_customers.setBounds(189, 175, 170, 140);
+		btn_customers.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\cliente.png"));
+		btn_customers.setBounds(189, 175, 158, 140);
 		panel.add(btn_customers);
 		
 		btn_record = new JButton("Registro");
-		btn_record.setBounds(189, 24, 170, 23);
+		btn_record.setFont(new Font("Century", Font.BOLD, 12));
+		btn_record.setForeground(new Color(217, 170, 174));
+		btn_record.setBackground(new Color(133, 61, 68));
+		btn_record.setBounds(189, 24, 158, 23);
 		panel.add(btn_record);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(0, 255, 255));
 		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Profile", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_1.setBounds(386, 11, 147, 348);
 		contentPane.add(panel_1);
@@ -105,6 +121,7 @@ public class Main_viewer extends JFrame {
 		panel_1.add(lblNewLabel);
 		
 		lbl_nameEmployee = new JLabel("desconocido");
+		lbl_nameEmployee.setFont(new Font("Century", Font.PLAIN, 12));
 		lbl_nameEmployee.setBounds(10, 191, 127, 14);
 		panel_1.add(lbl_nameEmployee);
 		
@@ -113,6 +130,7 @@ public class Main_viewer extends JFrame {
 		panel_1.add(lblDni);
 		
 		lbl_dniEmployee = new JLabel("desconocido");
+		lbl_dniEmployee.setFont(new Font("Century", Font.PLAIN, 12));
 		lbl_dniEmployee.setBounds(10, 241, 127, 14);
 		panel_1.add(lbl_dniEmployee);
 		
@@ -121,10 +139,13 @@ public class Main_viewer extends JFrame {
 		panel_1.add(lblCodigo);
 		
 		lbl_codeEmployee = new JLabel("desconocido");
+		lbl_codeEmployee.setFont(new Font("Century", Font.PLAIN, 12));
 		lbl_codeEmployee.setBounds(10, 291, 127, 14);
 		panel_1.add(lbl_codeEmployee);
 		
 		btn_signOut = new JButton("Sign Out");
+		btn_signOut.setFont(new Font("Century", Font.BOLD, 12));
+		btn_signOut.setBackground(new Color(197, 240, 245));
 		btn_signOut.setBounds(29, 316, 89, 23);
 		panel_1.add(btn_signOut);
 	}
