@@ -14,6 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.Font;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class Admin_viewer extends JFrame {
 
@@ -31,6 +35,7 @@ public class Admin_viewer extends JFrame {
     public JPasswordField pwd_newPassword;
     public JButton btn_singOut;
     public JButton btn_photo;
+    public JButton btn_gitHub;
 
     /**
      * Launch the application.
@@ -177,5 +182,16 @@ public class Admin_viewer extends JFrame {
         btn_singOut.setFont(new Font("Century", Font.BOLD, 12));
         btn_singOut.setBounds(135, 246, 116, 23);
         panel_1.add(btn_singOut);
+        
+        btn_gitHub = new JButton("gitHub");
+        btn_gitHub.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	}
+        });
+        btn_gitHub.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\github.jpg"));
+        btn_gitHub.setFont(new Font("Century", Font.PLAIN, 11));
+        btn_gitHub.setBackground(Color.GRAY);
+        btn_gitHub.setBounds(217, 11, 37, 43);
+        panel_1.add(btn_gitHub);
     }
 }

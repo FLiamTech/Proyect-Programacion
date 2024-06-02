@@ -1,12 +1,14 @@
 package controller;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -100,6 +102,7 @@ public class Logic_view_register implements ActionListener
 		this.av.btn_accept.addActionListener(this);
 		this.av.btn_create.addActionListener(this);
 		this.av.btn_photo.addActionListener(this);
+		this.av.btn_gitHub.addActionListener(this);
 		// Botones del login
 		this.log.btn_enter.addActionListener(this);
 		this.log.btn_goOut.addActionListener(this);
@@ -655,6 +658,22 @@ public class Logic_view_register implements ActionListener
 		 * Fin de la interfaz de proveedor
 		 * --------------------------------------------------------
 		 * */
+		/*--------------------------------------------------------
+		 * Pagina de GITHUB
+		 * --------------------------------------------------------
+		 * */
+		if (e.getSource() == av.btn_gitHub) 
+		{
+		    int response = JOptionPane.showConfirmDialog(av, "Desea ir al repositorio?", "Confirmar", JOptionPane.YES_NO_OPTION);
+		    if (response == JOptionPane.YES_OPTION) 
+		    {
+		        try {
+		            Desktop.getDesktop().browse(new URI("https://github.com/FLiamTech/Proyect-Programacion"));
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		        }
+		    }
+		}
 	}
 	/*--------------------------------------------------------
 	 * Carga los datos en las diferentes tablas de las interfaces
