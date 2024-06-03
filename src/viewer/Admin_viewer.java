@@ -188,7 +188,7 @@ public class Admin_viewer extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         	}
         });
-        btn_gitHub.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\github.jpg"));
+        btn_gitHub.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\viewer\\Multimedia\\images\\github.png"));
         btn_gitHub.setFont(new Font("Century", Font.PLAIN, 11));
         btn_gitHub.setBackground(Color.GRAY);
         btn_gitHub.setBounds(217, 11, 37, 43);

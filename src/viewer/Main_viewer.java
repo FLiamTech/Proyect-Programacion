@@ -78,22 +78,22 @@ public class Main_viewer extends JFrame {
 			}
 		});
 		btn_inventory.setBackground(new Color(255, 255, 255));
-		btn_inventory.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\agregar-producto.png"));
+		btn_inventory.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\viewer\\Multimedia\\images\\agregar-producto.png"));
 		btn_inventory.setBounds(10, 24, 158, 140);
 		panel.add(btn_inventory);
 		
 		btn_Egress = new JButton("Punto de venta");
-		btn_Egress.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\de-venta.png"));
+		btn_Egress.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\viewer\\Multimedia\\images\\de-venta.png"));
 		btn_Egress.setBounds(189, 53, 158, 111);
 		panel.add(btn_Egress);
 		
 		btn_supplier = new JButton("Gestion de Proveedor");
-		btn_supplier.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\proveedor.png"));
+		btn_supplier.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\viewer\\Multimedia\\images\\proveedor.png"));
 		btn_supplier.setBounds(9, 175, 159, 140);
 		panel.add(btn_supplier);
 		
 		btn_customers = new JButton("Gestion de clientes");
-		btn_customers.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\cliente.png"));
+		btn_customers.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\viewer\\Multimedia\\images\\cliente.png"));
 		btn_customers.setBounds(189, 175, 158, 140);
 		panel.add(btn_customers);
 		
@@ -112,7 +112,7 @@ public class Main_viewer extends JFrame {
 		panel_1.setLayout(null);
 		
 		lbl_photo = new JLabel("New label");
-		lbl_photo.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\view.Multimedia.Images\\iconProfile.png"));
+		lbl_photo.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\AA-UNIVERSIDAD\\Programacion Aplicada\\Proyecto\\Proyect\\src\\viewer\\Multimedia\\images\\iconProfile.png"));
 		lbl_photo.setBounds(10, 24, 120, 120);
 		panel_1.add(lbl_photo);
 		
