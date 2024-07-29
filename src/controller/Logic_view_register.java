@@ -22,7 +22,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import libreriaVersion1.Files;
+import com.mysql.cj.log.Log;
+
+import libreriaVersion3.Files;
 import model.Admin;
 import model.AdminDAO;
 import model.Client;
@@ -33,13 +35,16 @@ import model.Register;
 import model.RegisterDAO;
 import model.SupplierDAO;
 import model.Suppliers;
+import viewer.AddStock;
 import viewer.Admin_viewer;
+import viewer.ChangePw;
 import viewer.Customers;
 import viewer.Egress;
 import viewer.Inventory;
 import viewer.Login;
 import viewer.Main_viewer;
 import viewer.Record;
+import viewer.Report;
 import viewer.Supplier;
 
 public class Logic_view_register implements ActionListener
@@ -52,9 +57,9 @@ public class Logic_view_register implements ActionListener
 	private Record rc;
 	private Supplier sp;
 	private Files photo = new Files ("");
-	Admin_viewer av = new Admin_viewer();
-	Admin admin = new Admin();
-	AdminDAO adao = new AdminDAO();
+	private Admin_viewer av = new Admin_viewer();
+	private Admin admin = new Admin();
+	private AdminDAO adao = new AdminDAO();
 	// List que contrendran la lectura de cada archivo de texto
 	List <Admin> employees = new ArrayList();
 	List <Client> customers = new ArrayList();
@@ -62,23 +67,26 @@ public class Logic_view_register implements ActionListener
 	List <Register> record = new ArrayList();
 	List <Suppliers> suppliers = new ArrayList();
 	
-	Product product = new Product ();
-	ProductDAO pdao = new ProductDAO ();
+	private Product product = new Product ();
+	private ProductDAO pdao = new ProductDAO ();
 	
-	Client client = new Client ();
-	ClientDAO cdao = new ClientDAO ();
+	private Client client = new Client ();
+	private ClientDAO cdao = new ClientDAO ();
 	
 	private int discount;
 	private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 	
 	private int countEgree = 0;
-	Register register = new Register ();
-	RegisterDAO rdao = new RegisterDAO ();
+	private Register register = new Register ();
+	private RegisterDAO rdao = new RegisterDAO ();
 	
-	Suppliers supplier = new Suppliers ();
-	SupplierDAO sdao = new SupplierDAO();
+	private Suppliers supplier = new Suppliers ();
+	private SupplierDAO sdao = new SupplierDAO();
 	
-	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg, Record rc, Supplier sp)
+	private ChangePw cp;
+	private int attempts = 0;
+	
+	public Logic_view_register (Login log, Admin_viewer av, Main_viewer mv, Inventory iv, Customers cs, Egress eg, Record rc, Supplier sp, ChangePw cp)
 	{
 		this.iv = iv;	// Inventario
 		this.mv = mv;	// Main_viewer
@@ -88,7 +96,8 @@ public class Logic_view_register implements ActionListener
 		this.eg = eg;	// Egree
 		this.rc = rc;	// Register
 		this.sp = sp;	// Supplier
-
+		this.cp = cp;	// Change pw
+		
 		// Botones del main Viewer
 		this.mv.btn_inventory.addActionListener(this);
 		this.mv.btn_customers.addActionListener(this);
@@ -96,6 +105,11 @@ public class Logic_view_register implements ActionListener
 		this.mv.btn_Egress.addActionListener(this);
 		this.mv.btn_record.addActionListener(this);
 		this.mv.btn_supplier.addActionListener(this);
+		this.mv.btn_changePassword.addActionListener(this);
+		// Botones change Pw
+		this.cp.btn_accept.addActionListener(this);
+		this.cp.btn_findOut.addActionListener(this);
+		this.cp.btn_return.addActionListener(this);
 		// Botones del admin Viewer
 		this.av.btn_singOut.addActionListener(this);
 		this.av.btn_searchEmployee.addActionListener(this);
@@ -109,6 +123,7 @@ public class Logic_view_register implements ActionListener
 		// Botones del inventario
 		this.iv.btn_addProduct.addActionListener(this);
 		this.iv.btn_return.addActionListener(this);
+		this.iv.btn_addStock.addActionListener(this);
 		// Botones de customers
 		this.cs.btn_addClient.addActionListener(this);
 		this.cs.btn_searchClient.addActionListener(this);
@@ -128,15 +143,16 @@ public class Logic_view_register implements ActionListener
 		});
 		// Botones del register
 		this.rc.btn_returnRegister.addActionListener(this);
+		this.rc.btn_report.addActionListener(this);
 		// Botones del supllier
 		this.sp.btn_addSupplier.addActionListener(this);
 		this.sp.btn_returnSupplier.addActionListener(this);
+		
+		ProcessStock hilo = new ProcessStock(pdao);
+		hilo.start();
+		
 	}
-	
-	public Logic_view_register ()
-	{
 
-	}
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
@@ -226,6 +242,7 @@ public class Logic_view_register implements ActionListener
 	            saveFilePhoto();
 				try {
 					adao.writeEmployees(admin);
+					adao.insertBBDD(admin);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -307,6 +324,88 @@ public class Logic_view_register implements ActionListener
 			return;
 		}
 		/*--------------------------------------------------------
+		 * Inicio de la interfaz de cambiar pasword
+		 * --------------------------------------------------------
+		 * */
+		if (e.getSource() == mv.btn_changePassword)
+		{
+			cp.setVisible(true);
+			cp.setLocationRelativeTo(null);
+			mv.dispose();
+			
+			cp.pwf_currentPW.setEnabled(false);
+			cp.btn_accept.setEnabled(false);
+		}
+		else if (e.getSource() == cp.btn_findOut)
+		{
+		    String previousPassword = new String(cp.pwf_previousPW.getPassword());
+		    String password = new String (log.pwf_pasword.getPassword());
+		    try {
+		        employees = adao.readerEmployees();
+		        boolean flag = false;
+		        
+
+		        if (password.equals(previousPassword))
+	            {
+	                cp.pwf_currentPW.setEnabled(true);
+	                cp.btn_accept.setEnabled(true);
+	                flag = true;
+	               
+	            }
+		        if (!flag)
+		        {
+		            attempts++;
+		            if (attempts <= 3)
+		            {
+		                JOptionPane.showMessageDialog(cp, "Incorrect Password", "Attempt " + attempts + "/3", JOptionPane.WARNING_MESSAGE);
+		            }
+		            else
+		            {
+		                JOptionPane.showMessageDialog(cp, "Excess!!!", "Coming out", JOptionPane.WARNING_MESSAGE);
+		                cp.dispose();
+		                log.setVisible(true);
+		                cleanLogin();
+		                attempts = 0;
+		            }
+		        }
+		    } catch (IOException e1) {
+		        e1.printStackTrace();
+		    }
+		}
+		else if (e.getSource() == cp.btn_accept)
+		{
+			String newPassword = new String (cp.pwf_currentPW.getPassword());
+			String previousPassword = new String(cp.pwf_previousPW.getPassword());
+			boolean flag = false;
+			try {
+				employees = adao.readerEmployees();
+				for (Admin a : employees)
+				{
+					if (a.getPassword().equals(previousPassword))
+					{
+						a.setPassword(newPassword);
+						
+						adao.replaceEmployees(a);
+						flag = true;
+					}
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			if (flag)
+			{
+				JOptionPane.showMessageDialog(cp, "Password changed");
+			}
+		}
+		else if (e.getSource() == cp.btn_return)
+		{
+			mv.setVisible(true);
+			mv.setLocationRelativeTo(null);
+			
+			cp.dispose();
+		}
+		/*--------------------------------------------------------
 		 * Inicio de la interfaz de inventario
 		 * --------------------------------------------------------
 		 * */
@@ -342,6 +441,7 @@ public class Logic_view_register implements ActionListener
 				product.setSupplier(supplier);
 				try {
 					pdao.writeProducts(product);
+					pdao.insertBBDD(product);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -353,6 +453,14 @@ public class Logic_view_register implements ActionListener
 				iv.dispose();
 			}
 		}
+		if (e.getSource() == iv.btn_addStock)
+		{
+			AddStock as = new AddStock();
+			
+			as.setVisible(true);
+			as.setLocationRelativeTo(null);
+
+		}
 		if(e.getSource() == iv.btn_return)
 		{
 			mv.setVisible(true);
@@ -363,6 +471,7 @@ public class Logic_view_register implements ActionListener
 		 * Fin de la interfaz de inventario
 		 * --------------------------------------------------------
 		 * */
+		
 		/*--------------------------------------------------------
 		 * Inicio de la interfaz de Clientes
 		 *-------------------------------------------------------- 
@@ -385,6 +494,7 @@ public class Logic_view_register implements ActionListener
 				
 				try {
 					cdao.writeCustomers(client);
+					cdao.insertBBDD(client);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -491,7 +601,7 @@ public class Logic_view_register implements ActionListener
 			{
 				discount = discountType();
 				
-				eg.lbl_discountType.setText("<html><font color='blue'>Descuento: <font color='purple'>" + discount + "%</font></html>");
+				eg.lbl_discountType.setText("<html><font color='blue'>des: <font color='purple'>" + discount + "%</font></html>");
 			}
 			else
 			{
@@ -555,6 +665,7 @@ public class Logic_view_register implements ActionListener
 		        			
 		        			try {
 		        				rdao.writeRegister(register);
+		        				rdao.insertBBDD(register);
 		        			} catch (IOException e1) {
 		        				// TODO Auto-generated catch block
 		        				e1.printStackTrace();
@@ -601,6 +712,13 @@ public class Logic_view_register implements ActionListener
 			rc.lbl_numEgree.setText(String.valueOf(countEgree));
 			rc.lbl_numEgree.setForeground(Color.magenta);
 			listEgree();
+		}
+		if (e.getSource() == rc.btn_report)
+		{
+			Report rp = new Report();
+			
+			rp.setVisible(true);
+			rp.setLocationRelativeTo(null);
 		}
 		if (e.getSource() == rc.btn_returnRegister)
 		{
@@ -705,7 +823,8 @@ public class Logic_view_register implements ActionListener
 		try {
 	        record = rdao.readerRegister();
 	        
-	        for (Register rg : record) {
+	        for (Register rg : record) 
+	        {
 	            String listItem = "<html><b>Registro " + indice + "</b><br>";
 	            listItem += "<font color='brown'>Fecha:</font> " + rg.getDate() + "<br>";
 	            listItem += "<font color='yellow'>Producto:</font> " + rg.getNameProduct() + "<br>";
@@ -850,7 +969,7 @@ public class Logic_view_register implements ActionListener
 	}
 	private String getDate()
     {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         return formatter.format(date);
     }

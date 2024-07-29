@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import libreriaVersion1.Files;
+import libreriaVersion3.Files;
 
-public class ProductDAO implements Path
+public class ProductDAO implements Path, Settings
 {
 	private Files file;
 	
@@ -18,6 +18,14 @@ public class ProductDAO implements Path
 	{
 		file = new Files (Path2);
 		file.create(0);
+	}
+	
+	public boolean insertBBDD (Product p)
+	{
+		boolean value = conn.setQuery(
+						String.format("INSERT INTO electrotech.products VALUES (null, '%s','%s',%d,'%.2f','%s')", 
+								p.getName(), p.getDescription(), p.getStock(), p.getPrice(), p.getSupplier()));
+		return value;
 	}
 	
 	public boolean writeProducts (Product p) throws IOException

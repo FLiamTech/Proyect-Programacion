@@ -9,9 +9,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import libreriaVersion1.Files;
+import libreriaVersion3.Files;
 
-public class AdminDAO implements Path
+public class AdminDAO implements Path, Settings
 {
 	private Files file;
 	
@@ -21,6 +21,13 @@ public class AdminDAO implements Path
 		file.create(0);
 	}
 	
+	public boolean insertBBDD (Admin a)
+	{
+		boolean value = conn.setQuery(
+						String.format("INSERT INTO electrotech.employee VALUES (null, '%s','%s','%s','%s','%s','%s')", 
+								a.getName(), a.getDni(), a.getCode(), a.getDate(), a.getUser(), a.getPassword()));
+		return value;
+	}
 	public boolean writeEmployees (Admin a) throws IOException
 	{
 		file.setFile(new File(Path, infoEmployees));

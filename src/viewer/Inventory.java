@@ -30,6 +30,7 @@ public class Inventory extends JFrame {
 	public JButton btn_addProduct;
 	public JLabel lbl_products;
 	public JButton btn_return;
+	public JButton btn_addStock;
 
 	/**
 	 * Launch the application.
@@ -157,5 +158,12 @@ public class Inventory extends JFrame {
 		btn_return.setForeground(Color.WHITE);
 		btn_return.setBounds(10, 278, 89, 23);
 		panel.add(btn_return);
+		
+		btn_addStock = new JButton("+ Stock");
+		btn_addStock.setForeground(Color.WHITE);
+		btn_addStock.setFont(new Font("Century", Font.PLAIN, 11));
+		btn_addStock.setBackground(new Color(139, 69, 19));
+		btn_addStock.setBounds(220, 233, 89, 23);
+		panel.add(btn_addStock);
 	}
 }

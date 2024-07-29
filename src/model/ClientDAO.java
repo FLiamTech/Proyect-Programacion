@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import libreriaVersion1.Files;
+import libreriaVersion3.Files;
 
-public class ClientDAO implements Path
+public class ClientDAO implements Path, Settings
 {
 	private Files file;
 	
@@ -18,6 +18,14 @@ public class ClientDAO implements Path
 	{
 		file = new Files(PATH_CUSTOMERS);
 		file.create(0);
+	}
+	
+	public boolean insertBBDD (Client c)
+	{
+		boolean value = conn.setQuery(
+						String.format("INSERT INTO electrotech.clients VALUES (null, '%s','%s','%s')", 
+								c.getName(), c.getAddress(), c.getContact()));
+		return value;
 	}
 	
 	public boolean writeCustomers (Client c) throws IOException

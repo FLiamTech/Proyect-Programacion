@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.Logic_view_register;
-import libreriaVersion1.Files;
+import libreriaVersion3.Files;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -88,6 +88,7 @@ public class Login extends JFrame {
 		Supplier sp = new Supplier();
 		Main_viewer mv = new Main_viewer();
 		Admin_viewer av = new Admin_viewer();
-		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs, eg, rc, sp);
+		ChangePw cp = new ChangePw();
+		Logic_view_register lg = new Logic_view_register(this, av, mv, iv, cs, eg, rc, sp, cp);
 	}
 }

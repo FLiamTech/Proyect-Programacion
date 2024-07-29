@@ -22,6 +22,7 @@ public class Record extends JFrame {
 	public JLabel lbl_numEgree;
 	public JButton btn_returnRegister;
 	private JScrollPane scrollPane;
+	public JButton btn_report;
 
 	/**
 	 * Launch the application.
@@ -72,8 +73,13 @@ public class Record extends JFrame {
 		
 		btn_returnRegister = new JButton("Return");
 		btn_returnRegister.setFont(new Font("Century", Font.PLAIN, 12));
-		btn_returnRegister.setBounds(335, 29, 89, 23);
+		btn_returnRegister.setBounds(335, 36, 89, 23);
 		panel.add(btn_returnRegister);
+		
+		btn_report = new JButton("Report");
+		btn_report.setFont(new Font("Century", Font.PLAIN, 12));
+		btn_report.setBounds(335, 11, 89, 23);
+		panel.add(btn_report);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Table", TitledBorder.LEADING, TitledBorder.TOP, null, null));

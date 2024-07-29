@@ -34,6 +34,7 @@ public class Main_viewer extends JFrame {
 	public JLabel lbl_nameEmployee;
 	public JButton btn_Egress;
 	public JButton btn_record;
+	public JButton btn_changePassword;
 
 	/**
 	 * Launch the application.
@@ -103,6 +104,12 @@ public class Main_viewer extends JFrame {
 		btn_record.setBackground(new Color(133, 61, 68));
 		btn_record.setBounds(189, 24, 158, 23);
 		panel.add(btn_record);
+		
+		btn_changePassword = new JButton("PW");
+		btn_changePassword.setFont(new Font("Century", Font.BOLD, 12));
+		btn_changePassword.setBackground(new Color(197, 240, 245));
+		btn_changePassword.setBounds(287, 314, 60, 23);
+		panel.add(btn_changePassword);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 255, 255));

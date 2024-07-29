@@ -1,6 +1,6 @@
 package model;
 
-import libreriaVersion1.Generica;
+import libreriaVersion3.Generica;
 
 public class Admin implements Account
 {

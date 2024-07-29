@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import libreriaVersion1.Files;
+import libreriaVersion3.Files;
 
-public class SupplierDAO implements Path
+public class SupplierDAO implements Path, Settings
 {
 	private Files file;
 	
@@ -17,6 +17,14 @@ public class SupplierDAO implements Path
 	{
 		file = new Files(PATH_SUPPLIER);
 		file.create(0);
+	}
+	
+	public boolean insertBBDD (Suppliers s)
+	{
+		boolean value = conn.setQuery(
+						String.format("INSERT INTO electrotech.suppliers VALUES (null, '%s','%s','%s','%s','%s','%s')", 
+								s.getName(), s.getEmail(), s.getDni(), s.getCode(), s.getPhone(), s.getBusinessName()));
+		return value;
 	}
 	
 	public boolean writeSupplier (Suppliers s) throws IOException
